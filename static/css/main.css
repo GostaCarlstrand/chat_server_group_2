@@ -1,0 +1,11 @@
+body {
+background-color: chartreuse;
+}
+a {
+margin: 7px;
+text-shadow: aqua;
+color: blueviolet;
+background-color: chocolate;
+padding: 6px;
+border-radius: 5px;
+}
