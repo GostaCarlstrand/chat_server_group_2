@@ -1,0 +1,50 @@
+title{
+    font-size: 35px;
+    color: black;
+}
+
+h1{
+    text-align: center;
+    border-radius: 5px;
+    margin: 35px;
+    font-family: Tahoma, sans-serif;
+    font-size: 35px;
+    color: antiquewhite;
+    backdrop-filter: blur();
+    background-color: cornflowerblue;
+    animation-delay: initial;
+}
+body {
+background-image: linear-gradient(to right, lightsteelblue,antiquewhite);
+
+}
+div {
+    text-align: center;
+    padding: 10px;
+    margin: 100px;
+}
+a {
+    text-align: center;
+    border-radius: 5px;
+    margin: 35px;
+    font-family: Tahoma, sans-serif;
+    font-size: 35px;
+    color: antiquewhite;
+    backdrop-filter: blur();
+    background-color: cornflowerblue;
+    animation-delay: initial;
+}
+.log-in-box{
+    color: antiquewhite;
+    background-color: cornflowerblue;
+    text-align: center;
+    border-radius: 35px;
+}
+.log-in-text {
+    color: gray;
+    border-radius: 10px;
+}
+.erroneous_input {
+    color: red;
+    border-radius: 20px;
+}
