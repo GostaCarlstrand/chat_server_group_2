@@ -1,11 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
+users = {'Edvin': ''}
 
 
 @app.get('/authenticate')
 def authenticate():
     return render_template("authenticate.html")
+
+
+@app.post('/authenticate')
+def authenticate_post_login():
+    username = request.form['user_name']
+    password = request.form['password']
+    return redirect(url_for('user_login'))
 
 
 @app.get('/create_user')
