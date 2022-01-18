@@ -6,12 +6,18 @@
     <h1>Welcome to the community!</h1>
 {% endblock %}
 {% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+    {% endwith %}
     <div class="log-in-box">
         <p> Enter username and password </p>
-        <form class = "log-in-form" action="/authenticate" method="post">
+        <form class = "log-in-form" action="{{url_for('bp_open.authenticate_post')}}" method="post">
             <input class = "log-in-text" type="text" name="user_name" placeholder="Username" />
             <br/>
-
             <input class = "log-in-text" type="password" name="password" placeholder="Password" />
             <br/>
             <input type="submit" value="Enter">

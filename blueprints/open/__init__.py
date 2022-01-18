@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from models import User
 
 # Create a blueprint object that can be used as an app object for this blueprint
@@ -9,6 +9,21 @@ bp_open = Blueprint('bp_open', __name__)
 @bp_open.get('/authenticate')
 def authenticate():
     return render_template("authenticate.html")
+
+
+@bp_open.post('/authenticate')
+def authenticate_post():
+    username = request.form["user_name"]
+    password = request.form["password"]
+    user = User.query.filter_by(name=username).first()
+
+    if user:
+        hashed_pwd = user.password
+        if check_password_hash(hashed_pwd, password):
+            return redirect(url_for('bp_open.user_login'))
+
+    flash("User or password incorrect")
+    return redirect(url_for('bp_open.authenticate'))
 
 
 @bp_open.get('/signup')
