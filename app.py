@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
-users = {'Edvin': ''}
+users = [{'username': 'Edvin', 'password': '1234'}]
 
 
 @app.get('/authenticate')
@@ -13,7 +13,11 @@ def authenticate():
 def authenticate_post_login():
     username = request.form['user_name']
     password = request.form['password']
-    return redirect(url_for('user_login'))
+
+    for user in users:
+        if user['username'] == username and user['password'] == password:
+            return redirect(url_for('user_login'))
+    return render_template("unauthorized.html")
 
 
 @app.get('/create_user')
@@ -32,4 +36,4 @@ def user_create_user():
 
 
 if __name__ == "__main__":
-    app.run(port=6842)
+    app.run()

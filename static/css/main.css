@@ -44,3 +44,7 @@ a {
     color: gray;
     border-radius: 10px;
 }
+.erroneous_input {
+    color: red;
+    border-radius: 20px;
+}
