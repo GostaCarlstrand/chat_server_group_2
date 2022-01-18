@@ -1,39 +1,19 @@
+import json
+
 from flask import Flask, render_template, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
-users = [{'username': 'Edvin', 'password': '1234'}]
-
-
-@app.get('/authenticate')
-def authenticate():
-    return render_template("authenticate.html")
+db = SQLAlchemy()
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
-@app.post('/authenticate')
-def authenticate_post_login():
-    username = request.form['user_name']
-    password = request.form['password']
+def create_app():
+    app = Flask(__name__)
+    app.config['SECRET_KEY'] = 'qwerty'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+    db.init_app(app)
 
-    for user in users:
-        if user['username'] == username and user['password'] == password:
-            return redirect(url_for('user_login'))
-    return render_template("unauthorized.html")
+    from blueprints.open import bp_open
+    app.register_blueprint(bp_open)
 
-
-@app.get('/create_user')
-def user_post():
-    return render_template("create_user.html")
-
-
-@app.get('/authenticate/login')
-def user_login():
-    return render_template("login.html")
-
-
-@app.get('/authenticate/create_user')
-def user_create_user():
-    return render_template("create_user.html")
-
-
-if __name__ == "main":
-    app.run(port=4879)
+    return app

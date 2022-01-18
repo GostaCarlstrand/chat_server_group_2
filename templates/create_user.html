@@ -1,23 +1,31 @@
 {% extends "base-template.html" %}
 
-{% block content %}
-    <h1 id="main-heading">Woop woop</h1>
-    <p> Hello {{ name }}</p>
-    <p>Your friends are: </p>
-    <ul>
-        {% for friend in friends %}
-            <li>{{ friend }}</li>
-            <br>
-        {% endfor %}
-    </ul>
+{% block headline %}
+    <h1>Create User</h1>
+{% endblock %}
 
-    <form action="/user" method="POST">
-        <input type="text" name="user_name" placeholder="User name" />
+{% block content %}
+    <div class="log-in-box">
+    <form action="{{ url_for('bp_open.new_user') }}" method="post">
+        <label for="fname"> First name </label>
+        <input type="text" name="first_name"/>
         <br/>
-        <input type="submit" value="Send name">
+        <label for="fname"> Surname </label>
+        <input type="text" name="last_name"/>
+        <br/>
+        <label for="username"> Username </label>
+        <input type="text" name="user_name"/>
+        <br/>
+        <label for="password"> Password </label>
+        <input type="password" name="password"/>
+        <br/>
+        <label for="password_repeat"> Repeat password </label>
+        <input type="password" name="password_repeat"/>
+        <br/>
+        <input type="submit" value="Register">
     </form>
 
-    <button onclick="changeText()">Change main text</button>
+    </div>
 {% endblock %}
 
 {% block scripts %}
