@@ -7,7 +7,7 @@
 {% endblock %}
 {% block content %}
     <div class="log-in-box">
-        <p> Enter username and password </p>
+        <p class="erroneous_input"> Wrong username and/or password </p>
         <form class = "log-in-form" action="/authenticate" method="post">
             <input class = "log-in-text" type="text" name="user_name" placeholder="Username" />
             <br/>
