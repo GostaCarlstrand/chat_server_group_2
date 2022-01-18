@@ -5,16 +5,20 @@
 {% endblock %}
 
 {% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification">
+                {{ messages[0] }}. Go to <a href="{{ url_for('bp_open.authenticate') }}">login page</a>
+            </div>
+        {% endif %}
+    {% endwith %}
     <div class="log-in-box">
-    <form action="{{ url_for('bp_open.new_user') }}" method="post">
-        <label for="fname"> First name </label>
-        <input type="text" name="first_name"/>
-        <br/>
-        <label for="fname"> Surname </label>
-        <input type="text" name="last_name"/>
-        <br/>
+    <form action="{{ url_for('bp_open.signup_post') }}" method="post">
         <label for="username"> Username </label>
         <input type="text" name="user_name"/>
+        <br/>
+        <label for="email"> Email </label>
+        <input type="email" name="email"/>
         <br/>
         <label for="password"> Password </label>
         <input type="password" name="password"/>

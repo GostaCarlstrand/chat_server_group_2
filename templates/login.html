@@ -1,26 +1,7 @@
 {% extends "base-template.html" %}
-
-{% block content %}
-    <h1 id="main-heading">Log in</h1>
-    <p> Hello {{ name }}</p>
-    <p>Your friends are: </p>
-    <ul>
-        {% for friend in friends %}
-            <li>{{ friend }}</li>
-            <br>
-        {% endfor %}
-    </ul>
-
-    <form action="/blueprints/user" method="POST">
-        <input type="text" name="friend_name" placeholder="New friend name" />
-        <br/>
-        <input type="submit" value="Send name">
-    </form>
-
-    <button onclick="changeText()">Change main text</button>
+{% block title %}
+    <h1>User page</h1>
 {% endblock %}
-
-{% block scripts %}
-    <script>
-    </script>
+{% block headline %}
+    <h1>You are now logged in</h1>
 {% endblock %}
