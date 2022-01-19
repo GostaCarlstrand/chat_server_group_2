@@ -6,9 +6,9 @@ from models import User
 bp_open = Blueprint('bp_open', __name__)
 
 
-@bp_open.get('/authenticate')
-def authenticate():
-    return render_template("authenticate.html")
+@bp_open.get('/')
+def index():
+    return render_template("index.html")
 
 
 @bp_open.post('/authenticate')
@@ -18,12 +18,11 @@ def authenticate_post():
     user = User.query.filter_by(name=username).first()
 
     if user:
-        hashed_pwd = user.password
-        if check_password_hash(hashed_pwd, password):
+        if check_password_hash(user.password, password):
             return redirect(url_for('bp_open.user_login'))
 
     flash("User or password incorrect")
-    return redirect(url_for('bp_open.authenticate'))
+    return redirect(url_for('bp_open.index'))
 
 
 @bp_open.get('/signup')
