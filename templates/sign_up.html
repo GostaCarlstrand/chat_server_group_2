@@ -13,18 +13,24 @@
         {% endif %}
     {% endwith %}
     <div class="log-in-box">
-    <form action="{{ url_for('bp_open.signup_post') }}" method="post">
-        <label for="username"> Username </label>
+    <form onsubmit="return verifyPassword()">
+        <label class="form_label" for="username"> Username </label>
         <input type="text" name="user_name"/>
         <br/>
-        <label for="email"> Email </label>
+        <br/>
+        <label class="form_label" for="email"> Email </label>
         <input type="email" name="email"/>
         <br/>
-        <label for="password"> Password </label>
-        <input type="password" name="password"/>
         <br/>
-        <label for="password_repeat"> Repeat password </label>
-        <input type="password" name="password_repeat"/>
+        <label class="form_label" for="password"> Password </label>
+        <input type="password" name="password" id="pswd" value=""/>
+        <br/>
+        <span class = "notification" id="pswd_notification"> </span>
+        <br/>
+        <label class="form_label" for="password_repeat"> Repeat password </label>
+        <input type="password" name="password" id="pswd_repeat" value=""/>
+        <br/>
+        <span class = "notification" id="pswd_notification"> </span>
         <br/>
         <input type="submit" value="Register">
     </form>
@@ -33,6 +39,6 @@
 {% endblock %}
 
 {% block scripts %}
-    <script>
+    <script src="{{ url_for('static', filename='js/source.js') }}">
     </script>
 {% endblock %}

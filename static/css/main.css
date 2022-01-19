@@ -41,3 +41,6 @@ div {
     color: red;
     border-radius: 20px;
 }
+.form_label{
+    margin-left: 5px;
+}

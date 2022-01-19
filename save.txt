@@ -1,0 +1,15 @@
+<form action="{{ url_for('bp_open.signup_post') }}" method="post">
+        <label for="username"> Username </label>
+        <input type="text" name="user_name"/>
+        <br/>
+        <label for="email"> Email </label>
+        <input type="email" name="email"/>
+        <br/>
+        <label for="password"> Password </label>
+        <input type="password" name="password"/>
+        <br/>
+        <label for="password_repeat"> Repeat password </label>
+        <input type="password" name="password_repeat"/>
+        <br/>
+        <input type="submit" value="Register">
+    </form>
