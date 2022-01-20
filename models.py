@@ -8,6 +8,20 @@ class User(db.Model):
     password = db.Column(db.String(100))
     admin = db.Column(db.BOOLEAN, default=False)
 
+    def is_active(self):
+        return True
+
+    def is_authenticated(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.id
+
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
+
