@@ -30,9 +30,15 @@ def create_user_get():
     return render_template("sign_up.html")
 
 
+@bp_open.get('/chat/<user>')
+def chat_with(user):
+    print(user)
+    return render_template("chat_with_a_user.html")
+
 @bp_open.get('/authenticate/login')
 def user_login():
-    return render_template("login.html")
+    users = User.query.all()
+    return render_template("login.html", users_data=users)
 
 
 @bp_open.post('/signup')

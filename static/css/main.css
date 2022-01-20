@@ -18,12 +18,10 @@ body {
 background-image: linear-gradient(to right, lightsteelblue,antiquewhite);
 
 }
-div {
-    text-align: center;
-    padding: 10px;
-    margin: 100px;
-}
+
 .log-in-box{
+    margin: 100px;
+    padding: 10px;
     color: antiquewhite;
     background-color: cornflowerblue;
     text-align: center;
@@ -43,4 +41,12 @@ div {
 }
 .form_label{
     margin-left: 5px;
+}
+
+.box_with_users{
+    margin-left: 30px;
+    margin-right: 1200px;
+    border-radius: 20px;
+    shape-margin: inherit;
+    background-color: cornflowerblue;
 }
