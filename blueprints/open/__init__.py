@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask_login import login_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import User
+from passlib.hash import argon2
 
 # Create a blueprint object that can be used as an app object for this blueprint
 bp_open = Blueprint('bp_open', __name__)
@@ -11,34 +13,33 @@ def index():
     return render_template("index.html")
 
 
-@bp_open.post('/authenticate')
-def authenticate_post():
-    username = request.form["user_name"]
+@bp_open.post('/sign_in')
+def sign_in():
+
+    email = request.form["email"]
     password = request.form["password"]
-    user = User.query.filter_by(name=username).first()
+    user = User.query.filter_by(email=email).first()
+    try:
+        if user is None:
+            flash('Wrong email or password')
+            return redirect(url_for('bp_open.index'))
 
-    if user:
-        if check_password_hash(user.password, password):
-            return redirect(url_for('bp_open.user_login'))
+        if not argon2.verify(password, user.password):
+            flash('Wrong email or password')
+            return redirect(url_for('bp_open.index'))
+    except ValueError:
+        # Caused be previous users using sha256 password hash
+        flash("Something went wrong")
+        return redirect(url_for('bp_open.index'))
 
-    flash("User or password incorrect")
-    return redirect(url_for('bp_open.index'))
+    login_user(user)
+
+    return redirect(url_for('bp_user.user_get'))
 
 
 @bp_open.get('/signup')
-def create_user_get():
+def signup_get():
     return render_template("sign_up.html")
-
-
-@bp_open.get('/chat/<user>')
-def chat_with(user):
-    print(user)
-    return render_template("chat_with_a_user.html")
-
-@bp_open.get('/authenticate/login')
-def user_login():
-    users = User.query.all()
-    return render_template("login.html", users_data=users)
 
 
 @bp_open.post('/signup')
@@ -46,7 +47,7 @@ def signup_post():
     email = request.form.get('email')
     username = request.form.get('user_name')
     password = request.form['password']
-    hashed_password = generate_password_hash(password, method='sha256')
+    hashed_password = argon2.using(rounds=10).hash(password)
 
     # Check if user with this password exists in the database
     user = User.query.filter_by(email=email).first()  # First will give us an object if user exist, or None if not
@@ -54,7 +55,7 @@ def signup_post():
     if user:
         # If user is not none, then a user with this email exists in the database
         flash("Email address is already in use")
-        return redirect(url_for('bp_open.create_user_get'))
+        return redirect(url_for('bp_open.signup_get'))
 
     new_user = User(name=username, email=email, password=hashed_password)
 
@@ -62,4 +63,11 @@ def signup_post():
     db.session.add(new_user)
     db.session.commit()
 
-    return redirect(url_for('bp_open.user_login'))
+    login_user(new_user)
+
+    return redirect(url_for('bp_user.user_get'))
+
+
+@bp_open.get('/chat/<user>')
+def chat_with(user):
+    return render_template("chat_with_a_user.html")

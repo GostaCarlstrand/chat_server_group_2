@@ -15,15 +15,15 @@
     {% endwith %}
     <div class="log-in-box">
         <p> Enter username and password </p>
-        <form class = "log-in-form" action="{{url_for('bp_open.authenticate_post')}}" method="post">
-            <input class = "log-in-text" type="text" name="user_name" placeholder="Username" />
+        <form class = "log-in-form" action="{{url_for('bp_open.sign_in')}}" method="post">
+            <input class = "log-in-text" type="text" name="email" placeholder="Email" />
             <br/>
             <input class = "log-in-text" type="password" name="password" placeholder="Password" />
             <br/>
             <input type="submit" value="Enter">
         </form>
         <p> Do not have an account yet?</p>
-        <a href="{{url_for('bp_open.create_user_get')}}"> Sign Up </a>
+        <a href="{{url_for('bp_open.signup_get')}}"> Sign Up </a>
 
     </div>
 

@@ -1,0 +1,24 @@
+{% extends "base-template.html" %}
+{% block title %}
+    <h1>User page</h1>
+{% endblock %}
+{% block headline %}
+    <h1>You are now signed in</h1>
+    <a href="{{ url_for("bp_user.sign_out") }}"> Log out </a>
+{% endblock %}
+{% block content %}
+    <p> Hi {{ current_user }}</p>
+    <p> Hi {{ current_user.name }}</p>
+
+    <div class = "box_with_users">
+        <h3>Friends</h3>
+        {% for user in users_data %}
+            {% if user.admin %}
+            <p> This user is online {{ user.name }} </p>
+            {% else %}
+            <p> This user is offline {{ user.name }} </p>
+            {% endif %}
+        {%  endfor %}
+
+    </div>
+{% endblock %}

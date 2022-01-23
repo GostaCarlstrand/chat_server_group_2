@@ -1,19 +1,32 @@
-import json
-
 from flask import Flask, render_template, request, redirect, url_for
+from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
-SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'qwerty'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
     db.init_app(app)
 
+    login_manager = LoginManager()
+
+    # Init the login manager with our app object
+    login_manager.init_app(app)
+
+    # Create a user_loader function. Used by flask-login
+    @login_manager.user_loader
+    def load_user(user_id):
+        from models import User
+        return User.query.filter_by(id=user_id).first()
+
     from blueprints.open import bp_open
     app.register_blueprint(bp_open)
+
+    from blueprints.user import bp_user
+    app.register_blueprint(bp_user)
 
     return app
