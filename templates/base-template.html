@@ -8,6 +8,15 @@
 
 </head>
 <body>
+    {% if current_user.signed_in %}
+        <a href="{{ url_for("bp_user.user_get") }}"> Home </a>
+        <a href='{{ url_for('bp_user.get_user_profile', user_id=current_user.id) }}'>Profile</a>
+        <a href="{{ url_for("bp_user.mailbox_get") }}"> Mailbox </a>
+        <a href="{{ url_for("bp_user.sign_out") }}"> Log out </a>
+    {% else %}
+        <a href="{{ url_for("bp_open.index") }}"> Home </a>
+    {% endif %}
+    <hr>
     {% block content %}
 
     {% endblock %}

@@ -4,21 +4,32 @@
 {% endblock %}
 {% block headline %}
     <h1>You are now signed in</h1>
-    <a href="{{ url_for("bp_user.sign_out") }}"> Log out </a>
+
 {% endblock %}
+
 {% block content %}
-    <p> Hi {{ current_user }}</p>
     <p> Hi {{ current_user.name }}</p>
 
-    <div class = "box_with_users">
-        <h3>Friends</h3>
+    <table class="friend_table">
+        <tr>
+            <th>User</th>
+            <th>Email</th>
+            <th>Online</th>
+        </tr>
         {% for user in users_data %}
-            {% if user.admin %}
-            <p> This user is online {{ user.name }} </p>
-            {% else %}
-            <p> This user is offline {{ user.name }} </p>
+        <tr>
+             <td><a href='{{ url_for('bp_user.get_user_profile', user_id=user.id) }}'>{{ user.name }}</a></td>
+             <td>{{ user.email }}</td>
+             {% if user.signed_in %}
+                <td><div class="circle online"> </div></td>
+             {% else %}
+                <td><div class="circle offline"> </div></td>
             {% endif %}
-        {%  endfor %}
+        </tr>
+        {% endfor %}
+    </table>
 
-    </div>
+
+
+
 {% endblock %}
