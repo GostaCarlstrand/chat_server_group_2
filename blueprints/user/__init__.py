@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, Response, request
 from flask_login import logout_user, login_required, current_user
 
+from controllers.chat_controller import create_chat_request, get_user_chat_requests
 from controllers.message_controller import get_user_messages, create_message
 from controllers.user_controller import get_user_by_id
 from models import User
@@ -33,7 +34,8 @@ def sign_out():
 def get_user_profile(user_id):
     user_id = int(user_id)
     user = get_user_by_id(user_id)
-    return render_template('user_profile.html', user=user)
+    chat_request = get_user_chat_requests(user_id)
+    return render_template('user_profile.html', user=user, chat_request=chat_request)
 
 
 
@@ -57,3 +59,17 @@ def message_post():
 def mailbox_get():
     messages = get_user_messages()
     return render_template('mailbox.html', messages=messages)
+
+
+@bp_user.post('/chat_request')
+def send_chat_request():
+    receiver_id = request.form['user_id']
+    user = current_user.id
+    create_chat_request(user, receiver_id)
+    return redirect(url_for('bp_user.user_get'))
+
+
+@bp_user.get('/chat_request/accept/<sender_id>')
+def accept_chat(sender_id):
+    print(sender_id)
+    return redirect(url_for('bp_user.user_get'))

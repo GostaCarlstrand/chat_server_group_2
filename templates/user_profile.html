@@ -7,6 +7,14 @@
 {% block content %}
     {% if user==current_user %}
         <h2>This is your profile</h2>
+    {% if chat_request %}
+        <p>You have a request to chat from {{ chat_request.sender_id }}</p>
+        <form action="{{ url_for('bp_user.accept_chat', sender_id=chat_request.sender_id) }}", method="get">
+        <input type="submit" value="Accept request?">
+    {% else %}
+        <p>You do not have any request</p>
+    {% endif %}
+
     {% else %}
         <h3>Send a message</h3>
         <form action="{{ url_for('bp_user.message_post') }}", method="post">
@@ -16,4 +24,16 @@
             <input type="submit" value="Send">
         </form>
     {% endif %}
+    {% if user.signed_in %}
+        <h3>{{ user.name }} is online</h3>
+        <form action="{{ url_for('bp_user.send_chat_request', user_id=user.id) }}" method="post">
+        <input type="hidden" name="user_id" value="{{ user.id }}">
+        <input type="submit" value="Request chat">
+        </form>
+    {% else %}
+        <h3>{{ user.name }} is offline</h3>
+
+    {% endif %}
+
+
 {% endblock %}

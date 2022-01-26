@@ -40,3 +40,11 @@ class Message(db.Model):
     body = db.Column(db.Text)
     sent_time = db.Column(db.DateTime, default=datetime.datetime.now())
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+
+class Chat(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_a_accepted = db.Column(db.Integer, default=0)
+    user_b_accepted = db.Column(db.Integer, default=0)
