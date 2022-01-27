@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, Response, request
 from flask_login import logout_user, login_required, current_user
 
-from controllers.chat_controller import create_chat_request, get_user_chat_requests
+from controllers.chat_controller import create_chat_request, get_user_chat_requests, accept_chat_request
 from controllers.message_controller import get_user_messages, create_message
 from controllers.user_controller import get_user_by_id
 from models import User
@@ -35,15 +35,7 @@ def get_user_profile(user_id):
     user_id = int(user_id)
     user = get_user_by_id(user_id)
     chat_request = get_user_chat_requests(user_id)
-    return render_template('user_profile.html', user=user, chat_request=chat_request)
-
-
-
-@bp_user.get('/message/<user_id>')
-def message_get(user_id):
-    user_id = int(user_id)
-    receiver = get_user_by_id(user_id)
-    return render_template('message.html', receiver=receiver)
+    return render_template('user_profile.html', user=user, chat_requests=chat_request)
 
 
 @bp_user.post('/message')
@@ -69,7 +61,7 @@ def send_chat_request():
     return redirect(url_for('bp_user.user_get'))
 
 
-@bp_user.get('/chat_request/accept/<sender_id>')
-def accept_chat(sender_id):
-    print(sender_id)
+@bp_user.post('/chat_request/accept/<chat_id>')
+def accept_chat(chat_id):
+    accept_chat_request(chat_id)
     return redirect(url_for('bp_user.user_get'))

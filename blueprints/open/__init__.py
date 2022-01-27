@@ -66,8 +66,3 @@ def signup_post():
     login_user(new_user)
 
     return redirect(url_for('bp_user.user_get'))
-
-
-@bp_open.get('/chat/<user>')
-def chat_with(user):
-    return render_template("chat_with_a_user.html")

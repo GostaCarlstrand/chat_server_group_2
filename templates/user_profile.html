@@ -7,10 +7,16 @@
 {% block content %}
     {% if user==current_user %}
         <h2>This is your profile</h2>
-    {% if chat_request %}
-        <p>You have a request to chat from {{ chat_request.sender_id }}</p>
-        <form action="{{ url_for('bp_user.accept_chat', sender_id=chat_request.sender_id) }}", method="get">
-        <input type="submit" value="Accept request?">
+    {% if chat_requests %}
+        {% for chat_request in chat_requests %}
+            {% if chat_request.user_b_accepted == 0 %}
+            <p>You have a request to chat from {{ chat_request.sender_id }}</p>
+            <form action="{{ url_for('bp_user.accept_chat', chat_id=chat_request.id) }}", method="post">
+            <input type="submit" value="Accept request?">
+            {% else %}
+            <p> You have accepted to chat with {{ chat_request.sender_id }}</p>
+            {% endif %}
+        {% endfor %}
     {% else %}
         <p>You do not have any request</p>
     {% endif %}

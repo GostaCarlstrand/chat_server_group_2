@@ -13,8 +13,18 @@ def create_chat_request(user_id, receiver_id):
 
 def get_user_chat_requests(user_id):
     from models import Chat
-    chat_request = Chat.query.filter_by(receiver_id=user_id).first()
-    return chat_request
+    chat_requests = Chat.query.filter_by(receiver_id=user_id).all()
+    return chat_requests
+
+
+def accept_chat_request(chat_id):
+    from models import Chat
+    chat_request = Chat.query.filter_by(id=chat_id).first()
+    chat_request.user_b_accepted = 1
+    from app import db
+    db.session.add(chat_request)
+    db.session.commit()
+
 
 
 
