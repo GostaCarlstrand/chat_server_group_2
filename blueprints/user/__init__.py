@@ -1,12 +1,30 @@
+import json
+import os
+from functools import wraps
+
 from flask import Blueprint, render_template, redirect, url_for, flash, Response, request
 from flask_login import logout_user, login_required, current_user
 
 from controllers.chat_controller import create_chat_request, get_user_chat_requests, accept_chat_request
-from controllers.message_controller import get_user_messages, create_message
+from controllers.message_controller import get_user_messages, create_message, get_all_messages
 from controllers.user_controller import get_user_by_id
 from models import User
 
 bp_user = Blueprint('bp_user', __name__)
+
+
+def authorize(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        is_admin = current_user.admin
+        if not is_admin:
+            response = {
+                'Result': "You're not authorized!",
+                'Reason': 'Not an admin.'
+            }
+            return Response(json.dumps(response), 401, content_type='application/json')
+        return f(*args, **kwargs)
+    return wrapper
 
 
 @bp_user.get('/user-home-page')
@@ -65,3 +83,10 @@ def send_chat_request():
 def accept_chat(chat_id):
     accept_chat_request(chat_id)
     return redirect(url_for('bp_user.user_get'))
+
+
+@bp_user.get('/admin')
+@authorize
+def get_admin_all_messages():
+    messages = get_all_messages()
+    return render_template('admin.html', messages=messages)
