@@ -14,7 +14,8 @@
             <form action="{{ url_for('bp_user.accept_chat', chat_id=chat_request.id) }}", method="post">
             <input type="submit" value="Accept request?">
             {% else %}
-            <p> You have accepted to chat with {{ chat_request.sender_id }}</p>
+                <p> You have accepted to chat with {{ chat_request.sender_id }}. Start your socket client, confirm when key has been sent. </p>
+                <form action >
             {% endif %}
         {% endfor %}
     {% else %}
