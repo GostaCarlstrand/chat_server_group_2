@@ -19,7 +19,11 @@ def get_public_key(chat_id):
 def get_encrypted_ip(chat_id):
     from models import Chat
     chat = Chat.query.filter_by(id=chat_id).first()
-    return Response(chat.encrypted_ip, 200, content_type='application/data')
+    encrypted_ip = chat.encrypted_ip
+    from app import db
+    db.session.delete(chat)
+    db.session.commit()
+    return Response(encrypted_ip, 200, content_type='application/data')
 
 
 @bp_api.post('/<chat_id>/ip')
