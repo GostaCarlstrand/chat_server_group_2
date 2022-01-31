@@ -10,11 +10,11 @@
     {% if chat_requests %}
         {% for chat_request in chat_requests %}
             {% if chat_request.user_b_accepted == 0 %}
-            <p>You have a request to chat from {{ chat_request.sender_id }}</p>
-            <form action="{{ url_for('bp_user.accept_chat', chat_id=chat_request.id) }}", method="post">
-            <input type="submit" value="Accept request?">
+                <p>You have a request to chat from {{ chat_request.sender_id }}</p>
+                <form action="{{ url_for('bp_user.accept_chat', chat_id=chat_request.id) }}", method="post">
+                <input type="submit" value="Accept request?">
             {% else %}
-            <p> You have accepted to chat with {{ chat_request.sender_id }}</p>
+                <p> You have accepted to chat with {{ chat_request.sender_id }}. Start your socket client, confirm when key has been sent. </p>
             {% endif %}
         {% endfor %}
     {% else %}
@@ -31,6 +31,7 @@
         </form>
     {% endif %}
     {% if user.signed_in %}
+        {% if user!=current_user %}
         <h3>{{ user.name }} is online</h3>
         <form action="{{ url_for('bp_user.send_chat_request', user_id=user.id) }}" method="post">
         <input type="hidden" name="user_id" value="{{ user.id }}">
@@ -38,7 +39,7 @@
         </form>
     {% else %}
         <h3>{{ user.name }} is offline</h3>
-
+        {% endif %}
     {% endif %}
 
 
