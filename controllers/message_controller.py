@@ -1,11 +1,13 @@
 import os
+
+
 import paho.mqtt.client as paho
 from Cryptodome.Cipher import PKCS1_OAEP
 from Cryptodome.PublicKey import RSA
 from Cryptodome.PublicKey.RSA import RsaKey
 from Cryptodome.Random import get_random_bytes
+
 from flask_login import current_user
-# from Cryptodome import AES
 from controllers.user_controller import get_user_by_id
 
 
@@ -20,6 +22,7 @@ def create_message(title, body, receiver_id):
         mqtt_publisher.loop_start()
         mqtt_publisher.publish(f'{receiver_id}', f"You've received a message from {user.name}")
         mqtt_publisher.loop_stop()
+
     receiver_id = int(receiver_id)
     receiver = get_user_by_id(receiver_id)
     message.receivers.append(receiver)
