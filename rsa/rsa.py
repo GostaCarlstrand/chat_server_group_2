@@ -1,4 +1,6 @@
 from Cryptodome.PublicKey import RSA
+
+from controllers.user_controller import get_user_by_id
 from models import User
 
 
@@ -15,4 +17,6 @@ def generate_rsa_pair(user):
 
     # Returns so that it is saved in the user database
     return public_key
+
+
 

@@ -102,3 +102,12 @@ def accept_chat(chat_id):
 def get_admin_all_messages():
     messages = get_all_messages()
     return render_template('admin.html', messages=messages)
+
+
+@bp_user.get('/user_pubkey/<user_id>')
+@login_required
+def get_user_public_key(user_id):
+    user = get_user_by_id(user_id)
+    public_key = user.public_rsa_key.decode("utf-8")    #Only arne have pub key
+
+    return Response(json.dumps(public_key), 200, content_type='application/json')
