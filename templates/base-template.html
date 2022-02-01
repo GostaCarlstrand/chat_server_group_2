@@ -16,6 +16,44 @@
         {% if current_user.admin %}
             <a href="{{ url_for("bp_user.get_admin_all_messages") }}"> Admin </a>
         {% endif %}
+        <div id="message-icon" class="message"></div>
+        <a href="{{ url_for("bp_user.mailbox_get") }}" class="message">
+            <i class="fa fa-fw fa-envelope-open no-new-msg" id="message-symbol">
+                <span class="sup" id="message-count"></span>
+            </i> {# fa-envelope #}
+        </a>
+
+        <script id="checkMessagesJS">
+            checkForMessages()
+            setInterval(checkForMessages, 5000)
+
+            function checkForMessages() {
+            // fetch is by default a GET method
+                fetch("http://127.0.0.1:5010/check_messages")
+                    // The promise does just that promises data will be given. => the lambda gives us an anonymous
+                    // function.
+                    .then(response => response.json())
+                    .then(msgCount => {
+                        let messageSymbol = document.getElementById("message-symbol");
+                        let messageCount = document.getElementById("message-count")
+                        if(msgCount.newMessages === 0) {
+                            messageSymbol.classList.remove("fa-envelope")
+                            messageSymbol.classList.remove("new-msg")
+                            messageSymbol.classList.add("fa-envelope-open")
+                            messageSymbol.classList.add("no-new-msg")
+                            messageCount.innerHTML = ""
+                        }
+                        else {
+                            messageSymbol.classList.remove("fa-envelope-open")
+                            messageSymbol.classList.remove("no-new-msg")
+                            messageSymbol.classList.add("fa-envelope")
+                            messageSymbol.classList.add("new-msg")
+                            messageCount.innerHTML = msgCount.newMessages
+                        }
+                    });
+
+            }
+        </script>
     {% else %}
         <a href="{{ url_for("bp_open.index") }}"> Home </a>
     {% endif %}
@@ -25,7 +63,7 @@
     {% endblock %}
 
     {% block scripts %}
-        <script src="{{ url_for('static', filename='js/source.js')}}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
     {% endblock %}
 </body>
 </html>

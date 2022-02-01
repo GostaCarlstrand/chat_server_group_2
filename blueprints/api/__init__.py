@@ -21,6 +21,8 @@ def get_encrypted_ip(chat_id):
     chat = Chat.query.filter_by(id=chat_id).first()
     encrypted_ip = chat.encrypted_ip
     from app import db
+    if encrypted_ip is None:
+        return Response(encrypted_ip, 200, content_type='application/data')
     db.session.delete(chat)
     db.session.commit()
     return Response(encrypted_ip, 200, content_type='application/data')

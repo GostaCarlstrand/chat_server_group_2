@@ -4,13 +4,30 @@ from functools import wraps
 
 from flask import Blueprint, render_template, redirect, url_for, flash, Response, request
 from flask_login import logout_user, login_required, current_user
-
+from flask_cors import CORS, cross_origin
 from controllers.chat_controller import create_chat_request, get_user_chat_requests, accept_chat_request
 from controllers.message_controller import get_user_messages, create_message, get_all_messages
 from controllers.user_controller import get_user_by_id
 from models import User, Chat
 
 bp_user = Blueprint('bp_user', __name__)
+
+
+@bp_user.get('/check_messages')
+@cross_origin()
+def check_messages():
+    # Check for messages from db for current_user
+    from app import db
+    from models import User
+    user = current_user
+    count = 0
+    for message in user.recv_messages:
+        if not message.read:
+            count += 1
+    messages = {
+        "newMessages": count
+    }
+    return Response(json.dumps(messages), 200, content_type='application/json')
 
 
 def authorize_admin(f):
