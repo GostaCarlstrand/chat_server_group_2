@@ -5,6 +5,8 @@ from models import User
 from passlib.hash import argon2
 
 # Create a blueprint object that can be used as an app object for this blueprint
+from rsa.rsa import generate_rsa_pair
+
 bp_open = Blueprint('bp_open', __name__)
 
 
@@ -57,7 +59,9 @@ def signup_post():
         flash("Email address is already in use")
         return redirect(url_for('bp_open.signup_get'))
 
-    new_user = User(name=username, email=email, password=hashed_password)
+    user_public_key = generate_rsa_pair(username)
+
+    new_user = User(name=username, email=email, password=hashed_password, public_rsa_key=user_public_key)
 
     from app import db
     db.session.add(new_user)

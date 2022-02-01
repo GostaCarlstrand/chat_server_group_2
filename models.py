@@ -16,6 +16,7 @@ class User(db.Model):
     admin = db.Column(db.BOOLEAN, default=False)
     signed_in = db.Column(db.Integer, default=0)
     user_ip = db.Column(db.String(150))
+    public_rsa_key = db.Column(db.BLOB, default=None)
     sent_messages = db.relationship('Message', backref='sender', lazy=True)
     recv_messages = db.relationship('Message', secondary=message_recv, lazy='subquery',
                                     backref=db.backref('receivers', lazy=True))

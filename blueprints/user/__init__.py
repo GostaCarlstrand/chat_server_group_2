@@ -55,6 +55,8 @@ def get_user_profile(user_id):
     user_id = int(user_id)
     user = get_user_by_id(user_id)
     chat_request = get_user_chat_requests(user_id)
+
+
     return render_template('user_profile.html', user=user, chat_requests=chat_request)
 
 

@@ -14,7 +14,10 @@ def create_chat_request(user_id, receiver_id):
 def get_user_chat_requests(user_id):
     from models import Chat
     chat_requests = Chat.query.filter_by(receiver_id=user_id).all()
-    return chat_requests
+    if chat_requests:
+        return chat_requests
+    else:
+        return None
 
 
 def accept_chat_request(chat_id):
