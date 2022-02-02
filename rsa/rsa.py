@@ -17,6 +17,3 @@ def generate_rsa_pair(user):
 
     # Returns so that it is saved in the user database
     return public_key
-
-
-
