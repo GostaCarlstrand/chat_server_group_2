@@ -24,9 +24,9 @@
         <h3>Send a message</h3>
 
     <input type="text" placeholder="title" id="title_content"><br/>
-        <input type="text" placeholder="Message" id="msg_content"><br/>
+    <input type="text" placeholder="Message" id="msg_content"><br/>
+    <button onclick="encrypt()"> Submit </button>
 
-        <button onclick="encrypt()"> Submit </button>
     {% endif %}
     {% if user.signed_in %}
         {% if user!=current_user %}
@@ -45,6 +45,7 @@
 
 {% block scripts %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <script src="rsa.js"></script>
     <script>
         getUserPublicKey()
         let encrypted_title;
@@ -55,28 +56,38 @@
 
         function getUserPublicKey() {
             const xhttp = new XMLHttpRequest();
-            // The onload function is called when a response is coming from the server
+
             xhttp.onload = function() {
-                let jsObj = JSON.parse(this.responseText);
+                public_key = JSON.parse(this.responseText);
+                console.log(public_key)
+            }
 
-            fetch("http://127.0.0.1:5010/user_pubkey/{{ user.id }}")
-            pub_key = parseJson()
+            xhttp.open('GET', "http://127.0.0.1:5010/user_pubkey/{{ user.id }}")
+            xhttp.send()
         }
-
-        function parseJson(responseData) {
-            return responseData.json();
 
         function generateKey() {
             key = CryptoJS.lib.WordArray.random(16).toString();
         }
 
         function encrypt() {
+            generateKey()
             let message = document.getElementById("msg_content").value;
             let title = document.getElementById("title_content").value
             encrypted_title = CryptoJS.AES.encrypt(title, key);
             encrypted_body = CryptoJS.AES.encrypt(message, key);
-            document.getElementById("cipher").value = encrypted;
+            encryptAESKey(key)
         }
+
+        function encryptAESKey(key) {
+            // Create a RSA object
+            let rsaEncrypt = new JSEncrypt();
+            // Set the public key we want to use for encryption
+            rsaEncrypt.setPublicKey(public_key);
+            // Encrypt the AES key
+            encryptedAesKey = rsaEncrypt.encrypt(key);
+        }
+
 
 
     </script>
