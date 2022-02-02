@@ -1,6 +1,5 @@
 import os
 
-
 import paho.mqtt.client as paho
 from Cryptodome.Cipher import PKCS1_OAEP
 from Cryptodome.PublicKey import RSA
@@ -32,6 +31,10 @@ def create_message(title, body, receiver_id):
 
 
 def get_user_messages():
+    from app import db
+    for message in current_user.recv_messages:
+        message.read = True
+    db.session.commit()
     return current_user.recv_messages
 
 
@@ -39,7 +42,6 @@ def get_all_messages():
     from models import Message
     message = Message.query.all()
     return message
-
 
 # def aes_encrypt(message):
 #     from models import Message

@@ -13,8 +13,43 @@ from models import User, Chat
 bp_user = Blueprint('bp_user', __name__)
 
 
+@bp_user.get('/check_incoming_chats')
+@cross_origin()
+@login_required
+def check_incoming_chats():
+    # Check for incoming chats from db for current_user
+    from models import Chat
+    count = 0
+    incoming_chats = Chat.query.filter_by(receiver_id=current_user.id).all()
+    for chat in incoming_chats:
+        if not chat.user_b_accepted:
+            count += 1
+    chats = {
+        "newChats": count
+    }
+    return Response(json.dumps(chats), 200, content_type='application/json')
+
+
+@bp_user.get('/check_accepted_chats')
+@cross_origin()
+@login_required
+def check_accepted_chats():
+    # Check for accepted chats from db for current_user
+    from models import Chat
+    count = 0
+    accepted_chats = Chat.query.filter_by(sender_id=current_user.id).all()
+    for chat in accepted_chats:
+        if chat.user_b_accepted:
+            count += 1
+    chats = {
+        "newChats": count
+    }
+    return Response(json.dumps(chats), 200, content_type='application/json')
+
+
 @bp_user.get('/check_messages')
 @cross_origin()
+@login_required
 def check_messages():
     # Check for messages from db for current_user
     from app import db
@@ -97,8 +132,10 @@ def mailbox_get():
 def send_chat_request():
     receiver_id = request.form['user_id']
     user = current_user.id
+    create_message('Chat request sent', 'Your request has been sent. Wait for a message with further instructions.'
+                   , current_user.id)
     create_chat_request(user, receiver_id)
-    return redirect(url_for('bp_user.user_get'))
+    return redirect(url_for('bp_user.mailbox_get'))
 
 
 @bp_user.post('/chat_request/accept/<chat_id>')
@@ -108,7 +145,7 @@ def accept_chat(chat_id):
     create_message('Chat accepted', 'Start your client server.', current_user.id)
     chat = Chat.query.filter_by(id=chat_id).first()
     create_message(f'Chat accepted by {current_user.name}', 'Start your socket server.', chat.sender_id)
-    return redirect(url_for('bp_user.user_get'))
+    return redirect(url_for('bp_user.mailbox_get'))
 
 
 @bp_user.get('/admin')
