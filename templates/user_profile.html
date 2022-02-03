@@ -26,8 +26,9 @@
 
         <input type="text" placeholder="title" id="title_content"><br/>
         <input type="text" placeholder="Message" id="msg_content"><br/>
-        <input type="hidden" id="encrypted_aes_key" value="key"><br/>
-        <input type="hidden" value="{{ user.id }}">
+        <input type="hidden" value="{{ user.id }}" id="user_id"></br>
+        <span id="msg_sent"></span></br>
+
 
         <button type="button" onclick="encryptMessage()"> Submit </button>
 
@@ -63,7 +64,6 @@
 
             xhttp.onload = function() {
                 public_key = JSON.parse(this.responseText);
-                encryptMessage()  //Retrieving recv pub key from server
                 key = CryptoJS.lib.WordArray.random(16).toString(); //Creating an AES key
 
                 let message = document.getElementById("msg_content").value; //Extract values
@@ -71,11 +71,13 @@
 
                 let encrypted_title = CryptoJS.AES.encrypt(title, key); //Encrypt title with aes
                 let encrypted_body = CryptoJS.AES.encrypt(message, key);
+                let recipient_id = document.getElementById("user_id").value;
+                console.log(recipient_id)
 
                 let AESKey = encryptAESKey(public_key);  //Encrypt AES with RSA key
 
 
-                let data = {title: encrypted_title.toString(), body: encrypted_body.toString(), aes_key: AESKey.toString()};
+                let data = {title: encrypted_title.toString(), body: encrypted_body.toString(), aes_key: AESKey.toString(), user_id: recipient_id.toString()};
 
 
                 fetch("http://127.0.0.1:5000/message", {
@@ -87,20 +89,19 @@
 
             xhttp.open('GET', "http://127.0.0.1:5000/user_pubkey/{{ user.id }}")
             xhttp.send()
+            location.reload()
+            document.getElementById("msg_sent").innerHTML = "Message sent";
         }
-
 
         function encryptAESKey() {
 
             let rsaEncrypt = new JSEncrypt();
 
             rsaEncrypt.setPublicKey(public_key);
-
             let encryptedAesKey = rsaEncrypt.encrypt(key);
-            console.log(key);
-            console.log(public_key);
             return encryptedAesKey;
         }
+
 
 
     </script>

@@ -40,6 +40,7 @@ class Message(db.Model):
     body = db.Column(db.Text)
     sent_time = db.Column(db.DateTime, default=datetime.datetime.now())
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    encrypted_aes_key = db.Column(db.String(250), default=None)
 
 
 class Chat(db.Model):

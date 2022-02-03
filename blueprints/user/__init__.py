@@ -56,21 +56,17 @@ def get_user_profile(user_id):
     user = get_user_by_id(user_id)
     chat_request = get_user_chat_requests(user_id)
 
-
     return render_template('user_profile.html', user=user, chat_requests=chat_request)
 
 
 @bp_user.post('/message')
 def message_post():
     data = request.json
-
-
-    print()
-    #title = request.form['title']
-    #body = request.form['msg']
-    #receiver_id = request.form['user_id']
-    key = request.form['key']
-    #create_message(title, body, receiver_id)
+    title = data['title']
+    body = data['body']
+    encrypted_aes_key = data['aes_key']
+    receiver_id = data['user_id']
+    create_message(title, body, receiver_id, encrypted_aes_key)
     return redirect(url_for('bp_user.user_get'))
 
 

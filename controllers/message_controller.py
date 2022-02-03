@@ -11,10 +11,10 @@ from flask_login import current_user
 from controllers.user_controller import get_user_by_id
 
 
-def create_message(title, body, receiver_id):
+def create_message(title, body, receiver_id, encrypted_aes_key):
     from models import Message, User
     user = current_user
-    message = Message(title=title, body=body, sender_id=user.id)
+    message = Message(title=title, body=body, sender_id=user.id, encrypted_aes_key=encrypted_aes_key)
     recipient = User.query.filter_by(id=receiver_id).first()
     if not recipient.signed_in:
         from controllers.mqtt_controller import connect_mqtt
@@ -24,7 +24,7 @@ def create_message(title, body, receiver_id):
         mqtt_publisher.loop_stop()
 
     receiver_id = int(receiver_id)
-    receiver = get_user_by_id(receiver_id)
+    receiver = get_user_by_id(recipient.id)
     message.receivers.append(receiver)
     from app import db
     db.session.add(message)
