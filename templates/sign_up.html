@@ -27,31 +27,13 @@
         <label for="password_repeat"> Repeat password </label>
         <input type="password" name="password_repeat"/>
         <br/>
-        <button onclick="generateKeys()" value="Register">
+        <input type="submit" value="Sign up"/>
     </form>
 
     </div>
 {% endblock %}
 
 {% block scripts %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"> </script>
-    <script src="/static/js/rsa.js">
-
-    function generateRSAKeys() {
-        
-
-
-        }
-
-    </script>
-
-
-    # genera nyckelpar när sidan laddas
-    # Fil att ladda ned med den privata nyckeln
-    # publik nyckel i hidden html tag
-
-
-
 
 {% endblock %}
 

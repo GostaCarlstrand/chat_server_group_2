@@ -59,6 +59,6 @@ if __name__ == '__main__':
     dotenv.load_dotenv()
     app = create_app()
     #mqtt.client.loop_start()
-    app.run(port=5010)
+    app.run()
     #mqtt.client.loop_stop()
 

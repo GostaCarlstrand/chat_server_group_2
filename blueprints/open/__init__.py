@@ -59,8 +59,6 @@ def signup_post():
         flash("Email address is already in use")
         return redirect(url_for('bp_open.signup_get'))
 
-    user_public_key = generate_rsa_pair(username)
-
     new_user = User(name=username, email=email, password=hashed_password, public_rsa_key=user_public_key)
 
     from app import db

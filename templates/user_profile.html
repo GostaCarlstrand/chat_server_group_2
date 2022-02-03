@@ -23,9 +23,13 @@
     {% else %}
         <h3>Send a message</h3>
 
-    <input type="text" placeholder="title" id="title_content"><br/>
-    <input type="text" placeholder="Message" id="msg_content"><br/>
-    <button onclick="encrypt()"> Submit </button>
+
+        <input type="text" placeholder="title" id="title_content"><br/>
+        <input type="text" placeholder="Message" id="msg_content"><br/>
+        <input type="hidden" id="encrypted_aes_key" value="key"><br/>
+        <input type="hidden" value="{{ user.id }}">
+
+        <button type="button" onclick="encryptMessage()"> Submit </button>
 
     {% endif %}
     {% if user.signed_in %}
@@ -45,49 +49,58 @@
 
 {% block scripts %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
-    <script src="rsa.js"></script>
+    <script src="/static/js/rsa.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
-        getUserPublicKey()
-        let encrypted_title;
-        let encrypted_body;
-        let encryptedAesKey;
+
+
         let key;
         let public_key
 
-        function getUserPublicKey() {
+
+        function encryptMessage() {
             const xhttp = new XMLHttpRequest();
 
             xhttp.onload = function() {
                 public_key = JSON.parse(this.responseText);
-                console.log(public_key)
+                encryptMessage()  //Retrieving recv pub key from server
+                key = CryptoJS.lib.WordArray.random(16).toString(); //Creating an AES key
+
+                let message = document.getElementById("msg_content").value; //Extract values
+                let title = document.getElementById("title_content").value; //Extract values
+
+                let encrypted_title = CryptoJS.AES.encrypt(title, key); //Encrypt title with aes
+                let encrypted_body = CryptoJS.AES.encrypt(message, key);
+
+                let AESKey = encryptAESKey(public_key);  //Encrypt AES with RSA key
+
+
+                let data = {title: encrypted_title.toString(), body: encrypted_body.toString(), aes_key: AESKey.toString()};
+
+
+                fetch("http://127.0.0.1:5000/message", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
             }
 
-            xhttp.open('GET', "http://127.0.0.1:5010/user_pubkey/{{ user.id }}")
+            xhttp.open('GET', "http://127.0.0.1:5000/user_pubkey/{{ user.id }}")
             xhttp.send()
         }
 
-        function generateKey() {
-            key = CryptoJS.lib.WordArray.random(16).toString();
-        }
 
-        function encrypt() {
-            generateKey()
-            let message = document.getElementById("msg_content").value;
-            let title = document.getElementById("title_content").value
-            encrypted_title = CryptoJS.AES.encrypt(title, key);
-            encrypted_body = CryptoJS.AES.encrypt(message, key);
-            encryptAESKey(key)
-        }
+        function encryptAESKey() {
 
-        function encryptAESKey(key) {
-            // Create a RSA object
             let rsaEncrypt = new JSEncrypt();
-            // Set the public key we want to use for encryption
-            rsaEncrypt.setPublicKey(public_key);
-            // Encrypt the AES key
-            encryptedAesKey = rsaEncrypt.encrypt(key);
-        }
 
+            rsaEncrypt.setPublicKey(public_key);
+
+            let encryptedAesKey = rsaEncrypt.encrypt(key);  
+            console.log(key);
+            console.log(public_key);
+            return encryptedAesKey;
+        }
 
 
     </script>

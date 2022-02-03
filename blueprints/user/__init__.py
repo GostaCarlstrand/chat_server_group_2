@@ -61,12 +61,16 @@ def get_user_profile(user_id):
 
 
 @bp_user.post('/message')
-@login_required
 def message_post():
-    title = request.form['title']
-    body = request.form['body']
-    receiver_id = request.form['user_id']
-    create_message(title, body, receiver_id)
+    data = request.json
+
+
+    print()
+    #title = request.form['title']
+    #body = request.form['msg']
+    #receiver_id = request.form['user_id']
+    key = request.form['key']
+    #create_message(title, body, receiver_id)
     return redirect(url_for('bp_user.user_get'))
 
 

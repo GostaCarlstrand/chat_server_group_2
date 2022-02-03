@@ -3,6 +3,7 @@ import json
 import flask
 from flask import Flask, Response, Blueprint, request
 from controllers import chat_controller
+from controllers.user_controller import get_user_by_id
 from models import User
 
 bp_api = Blueprint('bp_api', __name__)
@@ -46,3 +47,14 @@ def post_public_key(chat_id):
     from app import db
     db.session.commit()
     return Response(json.dumps('The key has been received and will be sent.'), 200, content_type='application/json')
+
+
+@bp_api.post('/user/public_key/<user_id>')
+def add_user_pubkey(user_id):
+    user_public_key = flask.request.data
+    from models import User
+    user = get_user_by_id(user_id)
+    user_public_key = user.public_rsa_key
+    from app import db
+    db.session.commit()
+
