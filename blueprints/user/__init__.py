@@ -55,8 +55,6 @@ def get_user_profile(user_id):
     user_id = int(user_id)
     user = get_user_by_id(user_id)
     chat_request = get_user_chat_requests(user_id)
-
-
     return render_template('user_profile.html', user=user, chat_requests=chat_request)
 
 
@@ -108,6 +106,13 @@ def get_admin_all_messages():
 @login_required
 def get_user_public_key(user_id):
     user = get_user_by_id(user_id)
-    public_key = user.public_rsa_key.decode("utf-8")    #Only arne have pub key
-
+    public_key = user.public_rsa_key.decode("utf-8")
     return Response(json.dumps(public_key), 200, content_type='application/json')
+
+
+# @bp_user.get('/user_pubkey/<user_id>')
+# @login_required
+# def get_user_public_key(user_id):
+#     user = get_user_by_id(user_id)
+#     public_key = user.public_rsa_key
+#     return Response(public_key, 200, content_type='application/data')

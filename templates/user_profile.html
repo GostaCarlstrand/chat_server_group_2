@@ -23,9 +23,12 @@
     {% else %}
         <h3>Send a message</h3>
 
-    <input type="text" placeholder="title" id="title_content"><br/>
-    <input type="text" placeholder="Message" id="msg_content"><br/>
-    <button onclick="encrypt()"> Submit </button>
+        <input type="text" placeholder="title" id="title_content"><br/>
+        <input type="text" placeholder="Message" id="msg_content"><br/>
+        <input type="hidden" name="encryptedAE">
+        <input type="hidden" name="encryptedAE">
+        <input type="hidden" name="encryptedAE">
+        <button onclick="encrypt()"> Submit </button>
 
     {% endif %}
     {% if user.signed_in %}
@@ -59,7 +62,6 @@
 
             xhttp.onload = function() {
                 public_key = JSON.parse(this.responseText);
-                console.log(public_key)
             }
 
             xhttp.open('GET', "http://127.0.0.1:5010/user_pubkey/{{ user.id }}")
@@ -73,10 +75,22 @@
         function encrypt() {
             generateKey()
             let message = document.getElementById("msg_content").value;
-            let title = document.getElementById("title_content").value
+            let title = document.getElementById("title_content").value;
             encrypted_title = CryptoJS.AES.encrypt(title, key);
             encrypted_body = CryptoJS.AES.encrypt(message, key);
             encryptAESKey(key)
+
+            const data = { title: encrypted_title, body: encrypted_body, key: encryptedAesKey };
+
+            fetch('https://example.com/profile', {
+              method: 'POST', // or 'PUT'
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => data
         }
 
         function encryptAESKey(key) {

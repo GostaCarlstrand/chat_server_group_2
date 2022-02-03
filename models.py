@@ -48,5 +48,4 @@ class Chat(db.Model):
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user_a_accepted = db.Column(db.Integer, default=0)
     user_b_accepted = db.Column(db.Integer, default=0)
-    pub_key = db.Column(db.BLOB, default=None)
     encrypted_ip = db.Column(db.BLOB, default=None)
