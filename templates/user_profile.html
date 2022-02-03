@@ -72,7 +72,6 @@
                 let encrypted_title = CryptoJS.AES.encrypt(title, key); //Encrypt title with aes
                 let encrypted_body = CryptoJS.AES.encrypt(message, key);
                 let recipient_id = document.getElementById("user_id").value;
-                console.log(recipient_id)
 
                 let AESKey = encryptAESKey(public_key);  //Encrypt AES with RSA key
 

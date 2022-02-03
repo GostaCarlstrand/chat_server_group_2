@@ -69,6 +69,20 @@ def message_post():
     create_message(title, body, receiver_id, encrypted_aes_key)
     return redirect(url_for('bp_user.user_get'))
 
+@bp_user.get('/messages')
+def user_msg_js():
+    messages = get_user_messages()
+    message_to_mailbox = []
+    for message in messages:
+        message_dict = {
+            'title': message.title,
+            'body': message.body,
+            'encrypted_aes_key': message.encrypted_aes_key,
+            'sender_id': message.sender_id
+        }
+        message_to_mailbox.append(message_dict)
+    return Response(json.dumps(message_to_mailbox), 200, content_type='application/json')
+
 
 @bp_user.get('/mailbox')
 @login_required
