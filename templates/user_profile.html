@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block content %}
+
+
     {% if user==current_user %}
         <h2>This is your profile</h2>
         {% if chat_requests %}
@@ -19,6 +21,8 @@
         {% else %}
             <p>You do not have any request</p>
         {% endif %}
+
+
     {% else %}
         <h3>Send a message</h3>
 
@@ -26,6 +30,12 @@
         <input type="text" placeholder="Message" id="msg_content"><br/>
         <input type="hidden" value="{{ user.id }}" id="user_id"></br>
         <span id="msg_sent"></span></br>
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> b927b26 (Start working on profile pciture)
         <button type="button" onclick="encryptMessage()"> Submit </button>
 
     {% endif %}
@@ -40,6 +50,14 @@
         <h3>{{ user.name }} is offline</h3>
         {% endif %}
     {% endif %}
+    <div class="profile-pic">
+        <label class="-label" for="file">
+            <span class="glyphicon glyphicon-camera"></span>
+            <span>Change Image</span> 
+        </label>
+        <input id="file" type="file" onchange="loadFile(event)"/>
+        <img src="https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg" id="output" width="200" />
+    </div>
 
 
 {% endblock %}
@@ -53,6 +71,11 @@
 
         let key;
         let public_key
+
+        var loadFile = function (event) {
+        var image = document.getElementById("output");
+        image.src = URL.createObjectURL(event.target.files[0]);
+        };
 
 
         function encryptMessage() {
