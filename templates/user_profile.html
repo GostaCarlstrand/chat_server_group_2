@@ -1,0 +1,108 @@
+{% extends "base-template.html" %}
+
+{% block headline %}
+    <h1> {{ user.name }} Profile </h1>
+{% endblock %}
+
+{% block content %}
+    {% if user==current_user %}
+        <h2>This is your profile</h2>
+        {% if chat_requests %}
+            {% for chat_request in chat_requests %}
+                {% if chat_request.user_b_accepted == 0 %}
+                    <p>You have a request to chat from {{ chat_request.sender_id }}</p>
+                    < action="{{ url_for('bp_user.accept_chat', chat_id=chat_request.id) }}", method="post">
+                    <input type="submit" value="Accept request?">
+                {% else %}
+                    <p> You have accepted to chat with {{ chat_request.sender_id }}. Start your socket client, confirm when key has been sent. </p>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <p>You do not have any request</p>
+        {% endif %}
+    {% else %}
+        <h3>Send a message</h3>
+
+        <input type="text" placeholder="title" id="title_content"><br/>
+        <input type="text" placeholder="Message" id="msg_content"><br/>
+        <input type="hidden" name="encryptedAE">
+        <input type="hidden" name="encryptedAE">
+        <input type="hidden" name="encryptedAE">
+        <button onclick="encrypt()"> Submit </button>
+
+    {% endif %}
+    {% if user.signed_in %}
+        {% if user!=current_user %}
+        <h3>{{ user.name }} is online</h3>
+        <form action="{{ url_for('bp_user.send_chat_request', user_id=user.id) }}" method="post">
+        <input type="hidden" name="user_id" value="{{ user.id }}">
+        <input type="submit" value="Request chat">
+        </form>
+    {% else %}
+        <h3>{{ user.name }} is offline</h3>
+        {% endif %}
+    {% endif %}
+
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <script src="rsa.js"></script>
+    <script>
+        getUserPublicKey()
+        let encrypted_title;
+        let encrypted_body;
+        let encryptedAesKey;
+        let key;
+        let public_key
+
+        function getUserPublicKey() {
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.onload = function() {
+                public_key = JSON.parse(this.responseText);
+            }
+
+            xhttp.open('GET', "http://127.0.0.1:5010/user_pubkey/{{ user.id }}")
+            xhttp.send()
+        }
+
+        function generateKey() {
+            key = CryptoJS.lib.WordArray.random(16).toString();
+        }
+
+        function encrypt() {
+            generateKey()
+            let message = document.getElementById("msg_content").value;
+            let title = document.getElementById("title_content").value;
+            encrypted_title = CryptoJS.AES.encrypt(title, key);
+            encrypted_body = CryptoJS.AES.encrypt(message, key);
+            encryptAESKey(key)
+
+            const data = { title: encrypted_title, body: encrypted_body, key: encryptedAesKey };
+
+            fetch('https://example.com/profile', {
+              method: 'POST', // or 'PUT'
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => data
+        }
+
+        function encryptAESKey(key) {
+            // Create a RSA object
+            let rsaEncrypt = new JSEncrypt();
+            // Set the public key we want to use for encryption
+            rsaEncrypt.setPublicKey(public_key);
+            // Encrypt the AES key
+            encryptedAesKey = rsaEncrypt.encrypt(key);
+        }
+
+
+
+    </script>
+{% endblock %}

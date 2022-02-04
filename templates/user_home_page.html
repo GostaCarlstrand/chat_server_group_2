@@ -1,0 +1,37 @@
+{% extends "base-template.html" %}
+{% block title %}
+    <h1>User page</h1>
+{% endblock %}
+{% block headline %}
+    <h1>You are now signed in</h1>
+
+{% endblock %}
+
+{% block content %}
+    <p> Hi {{ current_user.name }}</p>
+
+    <table class="friend_table">
+        <tr>
+            <th>User</th>
+            <th>Email</th>
+            <th>Online</th>
+        </tr>
+        {% for user in users_data %}
+        <tr>
+            {% if user != current_user %}
+                 <td><a href='{{ url_for('bp_user.get_user_profile', user_id=user.id) }}'>{{ user.name }}</a></td>
+                 <td>{{ user.email }}</td>
+                 {% if user.signed_in %}
+                    <td><div class="circle online"> </div></td>
+                 {% else %}
+                    <td><div class="circle offline"> </div></td>
+                {% endif %}
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+
+
+
+
+{% endblock %}
