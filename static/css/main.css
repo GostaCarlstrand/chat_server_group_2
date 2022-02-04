@@ -1,3 +1,5 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+
 title{
     font-size: 35px;
     color: black;
@@ -14,27 +16,23 @@ h1{
     background-color: cornflowerblue;
     animation-delay: initial;
 }
+
+hr {
+    color: black;
+}
+
+table, td, tr {
+    border: 0.5px solid black;
+}
+
 body {
 background-image: linear-gradient(to right, lightsteelblue,antiquewhite);
 
 }
-div {
-    text-align: center;
-    padding: 10px;
-    margin: 100px;
-}
-a {
-    text-align: center;
-    border-radius: 5px;
-    margin: 35px;
-    font-family: Tahoma, sans-serif;
-    font-size: 35px;
-    color: antiquewhite;
-    backdrop-filter: blur();
-    background-color: cornflowerblue;
-    animation-delay: initial;
-}
+
 .log-in-box{
+    margin: 100px;
+    padding: 10px;
     color: antiquewhite;
     background-color: cornflowerblue;
     text-align: center;
@@ -47,4 +45,66 @@ a {
 .erroneous_input {
     color: red;
     border-radius: 20px;
+}
+.notification{
+    color: red;
+    border-radius: 20px;
+}
+.form_label{
+    margin-left: 5px;
+}
+
+.box_with_users{
+    margin-left: 30px;
+    margin-right: 1200px;
+    border-radius: 20px;
+    shape-margin: inherit;
+    background-color: cornflowerblue;
+}
+.center-content {
+    display:flex;
+    align-items: center;
+    align-content: center;
+}
+
+.circle {
+    margin: 0 auto;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+.online {
+    background: chartreuse;
+}
+
+.offline {
+    background: crimson;
+}
+
+.friend_table{
+    margin-left: 30px;
+    margin-right: 1200px;
+    border-radius: 5px;
+    shape-margin: inherit;
+    background-color: cornflowerblue;
+}
+
+.sup{
+    position: relative;
+    bottom: 1ex;
+    font-size: 80%;
+    text-decoration: none;
+}
+
+.message-symbol{
+    text-shadow: 1px 1px 1px gray;
+    font-size: 3em;
+}
+
+.no-new-msg{
+    color: rgba(54, 54, 54, 0.7);
+}
+
+.new-msg{
+    color: rgba(255, 54, 54, 0.7);;
 }
