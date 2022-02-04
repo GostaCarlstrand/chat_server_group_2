@@ -1,5 +1,5 @@
 import dotenv
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
@@ -11,7 +11,7 @@ def create_app():
     app.config['SECRET_KEY'] = 'qwerty'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
-
+    db.init_app(app)
     login_manager = LoginManager()
 
     # Init the login manager with our app object
@@ -39,4 +39,3 @@ if __name__ == '__main__':
     dotenv.load_dotenv()
     app = create_app()
     app.run()
-    app.run(port=5010)
