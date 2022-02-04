@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> gosta
 function verifyPassword() {
   var pw_repeated = document.getElementById("pswd_repeat").value;
   var pw = document.getElementById("pswd").value;
@@ -33,4 +36,7 @@ function verifyPassword() {
 function reload_page() {
     window.location.reload();
 }
+<<<<<<< HEAD
 >>>>>>> 4ef7b52e7c724dadf8c5e86ebdee4aff50d13b26
+=======
+>>>>>>> gosta

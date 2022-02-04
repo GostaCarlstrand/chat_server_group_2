@@ -1,7 +1,7 @@
 import json
 
 import flask
-from flask import Flask, Response, Blueprint, request
+from flask import Response, Blueprint
 
 bp_api = Blueprint('bp_api', __name__)
 

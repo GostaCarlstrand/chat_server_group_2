@@ -15,7 +15,6 @@
         <a href="{{ url_for("bp_user.sign_out") }}"> Log out </a>
         {% if current_user.admin %}
             <a href="{{ url_for("bp_user.get_admin_all_messages") }}"> Admin </a>
-        {% endif %}
         <div id="message-icon" class="message"></div>
         <a href="{{ url_for("bp_user.mailbox_get") }}" class="message">
             <i class="fa fa-fw fa-envelope-open no-new-msg" id="message-symbol">
@@ -34,7 +33,6 @@
                 <span class="sup" id="accepted-chat-count"></span>
             </i>
         </a>
-
         <script id="checkMessagesJS">
             checkForMessages()
             checkForIncomingChats()
@@ -111,6 +109,7 @@
                     });
             }
         </script>
+        {% endif %}
     {% else %}
         <a href="{{ url_for("bp_open.index") }}"> Home </a>
     {% endif %}

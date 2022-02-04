@@ -4,7 +4,11 @@ from functools import wraps
 
 from flask import Blueprint, render_template, redirect, url_for, flash, Response, request
 from flask_login import logout_user, login_required, current_user
+<<<<<<< HEAD
 from flask_cors import CORS, cross_origin
+=======
+
+>>>>>>> gosta
 from controllers.chat_controller import create_chat_request, get_user_chat_requests, accept_chat_request
 from controllers.message_controller import get_user_messages, create_message, get_all_messages
 from controllers.user_controller import get_user_by_id
@@ -13,6 +17,7 @@ from models import User, Chat
 bp_user = Blueprint('bp_user', __name__)
 
 
+<<<<<<< HEAD
 @bp_user.get('/check_incoming_chats')
 @cross_origin()
 @login_required
@@ -65,6 +70,8 @@ def check_messages():
     return Response(json.dumps(messages), 200, content_type='application/json')
 
 
+=======
+>>>>>>> gosta
 def authorize_admin(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -132,10 +139,15 @@ def mailbox_get():
 def send_chat_request():
     receiver_id = request.form['user_id']
     user = current_user.id
+<<<<<<< HEAD
     create_message('Chat request sent', 'Your request has been sent. Wait for a message with further instructions.'
                    , current_user.id)
     create_chat_request(user, receiver_id)
     return redirect(url_for('bp_user.mailbox_get'))
+=======
+    create_chat_request(user, receiver_id)
+    return redirect(url_for('bp_user.user_get'))
+>>>>>>> gosta
 
 
 @bp_user.post('/chat_request/accept/<chat_id>')
@@ -145,7 +157,11 @@ def accept_chat(chat_id):
     create_message('Chat accepted', 'Start your client server.', current_user.id)
     chat = Chat.query.filter_by(id=chat_id).first()
     create_message(f'Chat accepted by {current_user.name}', 'Start your socket server.', chat.sender_id)
+<<<<<<< HEAD
     return redirect(url_for('bp_user.mailbox_get'))
+=======
+    return redirect(url_for('bp_user.user_get'))
+>>>>>>> gosta
 
 
 @bp_user.get('/admin')
