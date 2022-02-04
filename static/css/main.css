@@ -1,3 +1,5 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+
 title{
     font-size: 35px;
     color: black;
@@ -18,6 +20,11 @@ h1{
 hr {
     color: black;
 }
+
+table, td, tr {
+    border: 0.5px solid black;
+}
+
 body {
 background-image: linear-gradient(to right, lightsteelblue,antiquewhite);
 
@@ -80,4 +87,24 @@ background-image: linear-gradient(to right, lightsteelblue,antiquewhite);
     border-radius: 5px;
     shape-margin: inherit;
     background-color: cornflowerblue;
+}
+
+.sup{
+    position: relative;
+    bottom: 1ex;
+    font-size: 80%;
+    text-decoration: none;
+}
+
+.message-symbol{
+    text-shadow: 1px 1px 1px gray;
+    font-size: 3em;
+}
+
+.no-new-msg{
+    color: rgba(54, 54, 54, 0.7);
+}
+
+.new-msg{
+    color: rgba(255, 54, 54, 0.7);;
 }

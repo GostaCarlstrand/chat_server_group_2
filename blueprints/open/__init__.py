@@ -1,11 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user
-from werkzeug.security import generate_password_hash, check_password_hash
 from models import User
 from passlib.hash import argon2
-
 # Create a blueprint object that can be used as an app object for this blueprint
-from rsa.rsa import generate_rsa_pair
 
 bp_open = Blueprint('bp_open', __name__)
 
@@ -17,7 +14,6 @@ def index():
 
 @bp_open.post('/sign_in')
 def sign_in():
-
     email = request.form["email"]
     password = request.form["password"]
     user = User.query.filter_by(email=email).first()
@@ -54,14 +50,17 @@ def signup_post():
     # Check if user with this password exists in the database
     user = User.query.filter_by(email=email).first()  # First will give us an object if user exist, or None if not
 
-
     if user:
         # If user is not none, then a user with this email exists in the database
         flash("Email address is already in use")
         return redirect(url_for('bp_open.signup_get'))
-    user_public_key = generate_rsa_pair(username)
 
-    new_user = User(name=username, email=email, password=hashed_password, public_rsa_key=user_public_key)
+    # Check if user has put in all the information required
+    if not email or not username or not password:
+        flash("You have not put in all the necessary information.")
+        return redirect(url_for('bp_open.signup_get'))
+
+    new_user = User(name=username, email=email, password=hashed_password)
 
     from app import db
     db.session.add(new_user)

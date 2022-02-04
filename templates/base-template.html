@@ -15,6 +15,100 @@
         <a href="{{ url_for("bp_user.sign_out") }}"> Log out </a>
         {% if current_user.admin %}
             <a href="{{ url_for("bp_user.get_admin_all_messages") }}"> Admin </a>
+        <div id="message-icon" class="message"></div>
+        <a href="{{ url_for("bp_user.mailbox_get") }}" class="message">
+            <i class="fa fa-fw fa-envelope-open no-new-msg" id="message-symbol">
+                <span class="sup" id="message-count"></span>
+            </i> {# fa-envelope #}
+        </a>
+        <div id="incoming-chat-icon" class="message"></div>
+        <a href="{{ url_for("bp_user.get_user_profile", user_id=current_user.id) }}" class="chat">
+            <i class="fa fa-fw fa-regular fa-comment no-new-msg" id="incoming-chat-symbol">
+                <span class="sup" id="incoming-chat-count"></span>
+            </i>
+        </a>
+        <div id="accepted-chat-icon" class="message"></div>
+        <a href="{{ url_for("bp_user.mailbox_get") }}" class="chat">
+            <i class="fa fa-fw fa-regular fa-comments no-new-msg" id="accepted-chat-symbol">
+                <span class="sup" id="accepted-chat-count"></span>
+            </i>
+        </a>
+        <script id="checkMessagesJS">
+            checkForMessages()
+            checkForIncomingChats()
+            checkForAcceptedChats()
+            setInterval(checkForMessages, 5000)
+            setInterval(checkForIncomingChats, 5000)
+            setInterval(checkForAcceptedChats, 5000)
+
+            function checkForMessages() {
+            // fetch is by default a GET method
+                fetch("http://127.0.0.1:5010/check_messages")
+                    // The promise does just that promises data will be given. => the lambda gives us an anonymous
+                    // function.
+                    .then(response => response.json())
+                    .then(msgCount => {
+                        let messageSymbol = document.getElementById("message-symbol");
+                        let messageCount = document.getElementById("message-count")
+                        if(msgCount.newMessages === 0) {
+                            messageSymbol.classList.remove("fa-envelope")
+                            messageSymbol.classList.remove("new-msg")
+                            messageSymbol.classList.add("fa-envelope-open")
+                            messageSymbol.classList.add("no-new-msg")
+                            messageCount.innerHTML = ""
+                        }
+                        else {
+                            messageSymbol.classList.remove("fa-envelope-open")
+                            messageSymbol.classList.remove("no-new-msg")
+                            messageSymbol.classList.add("fa-envelope")
+                            messageSymbol.classList.add("new-msg")
+                            messageCount.innerHTML = msgCount.newMessages
+                        }
+                    });
+            }
+
+            function checkForIncomingChats() {
+            // fetch is by default a GET method
+                fetch("http://127.0.0.1:5010/check_incoming_chats")
+                    // The promise does just that promises data will be given. => the lambda gives us an anonymous
+                    // function.
+                    .then(response => response.json())
+                    .then(cCount => {
+                        let incomingChatSymbol = document.getElementById("incoming-chat-symbol");
+                        let chatCount = document.getElementById("incoming-chat-count")
+                        if (cCount.newChats === 0) {
+                            incomingChatSymbol.classList.remove("new-msg")
+                            incomingChatSymbol.classList.add("no-new-msg")
+                            chatCount.innerHTML = ""
+                        } else {
+                            incomingChatSymbol.classList.remove("no-new-msg")
+                            incomingChatSymbol.classList.add("new-msg")
+                            chatCount.innerHTML = cCount.newChats
+                        }
+                    });
+            }
+
+            function checkForAcceptedChats() {
+            // fetch is by default a GET method
+                fetch("http://127.0.0.1:5010/check_accepted_chats")
+                    // The promise does just that promises data will be given. => the lambda gives us an anonymous
+                    // function.
+                    .then(response => response.json())
+                    .then(acCount => {
+                        let acceptedChatSymbol = document.getElementById("accepted-chat-symbol");
+                        let chatCount = document.getElementById("accepted-chat-count")
+                        if (acCount.newChats === 0) {
+                            acceptedChatSymbol.classList.remove("new-msg")
+                            acceptedChatSymbol.classList.add("no-new-msg")
+                            chatCount.innerHTML = ""
+                        } else {
+                            acceptedChatSymbol.classList.remove("no-new-msg")
+                            acceptedChatSymbol.classList.add("new-msg")
+                            chatCount.innerHTML = acCount.newChats
+                        }
+                    });
+            }
+        </script>
         {% endif %}
     {% else %}
         <a href="{{ url_for("bp_open.index") }}"> Home </a>
@@ -25,7 +119,7 @@
     {% endblock %}
 
     {% block scripts %}
-        <script src="{{ url_for('static', filename='js/source.js')}}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
     {% endblock %}
 </body>
 </html>

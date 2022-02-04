@@ -23,13 +23,10 @@
     {% else %}
         <h3>Send a message</h3>
 
-
         <input type="text" placeholder="title" id="title_content"><br/>
         <input type="text" placeholder="Message" id="msg_content"><br/>
         <input type="hidden" value="{{ user.id }}" id="user_id"></br>
         <span id="msg_sent"></span></br>
-
-
         <button type="button" onclick="encryptMessage()"> Submit </button>
 
     {% endif %}
@@ -93,15 +90,11 @@
         }
 
         function encryptAESKey() {
-
             let rsaEncrypt = new JSEncrypt();
 
             rsaEncrypt.setPublicKey(public_key);
             let encryptedAesKey = rsaEncrypt.encrypt(key);
             return encryptedAesKey;
         }
-
-
-
     </script>
 {% endblock %}
