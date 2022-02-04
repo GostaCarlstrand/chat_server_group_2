@@ -54,12 +54,12 @@ def signup_post():
     # Check if user with this password exists in the database
     user = User.query.filter_by(email=email).first()  # First will give us an object if user exist, or None if not
 
-    user_public_key = generate_rsa_pair(user)
 
     if user:
         # If user is not none, then a user with this email exists in the database
         flash("Email address is already in use")
         return redirect(url_for('bp_open.signup_get'))
+    user_public_key = generate_rsa_pair(username)
 
     new_user = User(name=username, email=email, password=hashed_password, public_rsa_key=user_public_key)
 

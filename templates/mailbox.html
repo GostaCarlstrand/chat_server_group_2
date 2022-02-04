@@ -40,14 +40,28 @@
         reader.readAsText(file);
     }
 
+    function createRowElement(text, tag) {
+        const title = document.createElement(tag);
+        title.innerText = text;
+        document.body.appendChild(title);
+    }
+
     function decryptMessage(encryptedMessages, size) {
+
+        createRowElement("", 'hr')
         for(let i = 0; i < size; i++) {
             let decrypted_aes_key = rsaDecryptAesKey((encryptedMessages[i].encrypted_aes_key), privateKey);
             let decrypted_title = decryptData(encryptedMessages[i].title, decrypted_aes_key);
             let decrypted_body = decryptData(encryptedMessages[i].body, decrypted_aes_key);
-            console.log(decrypted_title)
-            console.log(decrypted_body)
-            
+
+            createRowElement(decrypted_title, 'td')
+            createRowElement("", 'br')
+            createRowElement(decrypted_body, 'td')
+            createRowElement("", 'br')
+            createRowElement("", 'hr')
+
+
+
 
         }
     }
