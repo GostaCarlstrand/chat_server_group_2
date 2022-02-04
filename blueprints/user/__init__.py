@@ -1,6 +1,6 @@
 import json
 from functools import wraps
-from flask import Blueprint, render_template, redirect, url_for, Response, request
+from flask import Blueprint, render_template, redirect, url_for, Response, request, flash
 from flask_login import logout_user, login_required, current_user
 from flask_cors import cross_origin
 from controllers.chat_controller import create_chat_request, get_user_chat_requests, accept_chat_request
@@ -31,7 +31,7 @@ def authorize_public_key(f):
         has_key_been_uploaded = current_user.public_rsa_key
         if not has_key_been_uploaded:
             response = {
-                'Result': "You've not uploaded a public key Start your MQTT subscriber!",
+                'Result': "You've not uploaded a public key, start your MQTT subscriber!",
                 'Reason': 'No public key.'
             }
             return Response(json.dumps(response), 401, content_type='application/json')
@@ -172,10 +172,11 @@ def mailbox_get():
 def send_chat_request():
     receiver_id = request.form['user_id']
     user = current_user.id
-    create_message('Chat request sent', 'Your request has been sent. Wait for a message with further instructions.'
-                   , current_user.id)
-    create_chat_request(user, receiver_id)
-    return redirect(url_for('bp_user.mailbox_get'))
+    chat = create_chat_request(user, receiver_id)
+    flash(f'Chat accepted. Start your socket server. Connect to chat id: {chat.id}, chat partner id: {chat.receiver_id}')
+    return redirect(url_for('bp_user.get_user_profile', user_id=user))
+    # return Response(json.dumps(f'Chat accepted. Start your socket client. Connect to chat id: {chat.id}, chat partner '
+    #                            f'id: {chat.receiver_id}'), 200, content_type='application/json')
 
 
 @bp_user.post('/chat_request/accept/<chat_id>')
@@ -183,10 +184,10 @@ def send_chat_request():
 @authorize_public_key
 def accept_chat(chat_id):
     accept_chat_request(chat_id)
-    create_message('Chat accepted', 'Start your client server.', current_user.id)
+    user = current_user.id
     chat = Chat.query.filter_by(id=chat_id).first()
-    create_message(f'Chat accepted by {current_user.name}', 'Start your socket server.', chat.sender_id)
-    return redirect(url_for('bp_user.mailbox_get'))
+    flash(f'Chat accepted. Start your socket client. Connect to chat id: {chat_id}, chat partner id: {chat.sender_id}')
+    return redirect(url_for('bp_user.get_user_profile', user_id=user))
 
 
 @bp_user.get('/admin')

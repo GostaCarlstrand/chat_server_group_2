@@ -9,6 +9,7 @@ def create_chat_request(user_id, receiver_id):
     from app import db
     db.session.add(chat_request)
     db.session.commit()
+    return chat_request
 
 
 def get_user_chat_requests(user_id):
