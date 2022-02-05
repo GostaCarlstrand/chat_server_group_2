@@ -48,7 +48,7 @@ def signup_post():
     hashed_password = argon2.using(rounds=10).hash(password)
 
     # Check if user with this password exists in the database
-    user = User.query.filter_by(email=email).first()  # First will give us an object if user exist, or None if not
+    user = User.query.filter_by(email=email).first()  # First will give us an object if user exist, or 20 if not
 
     if user:
         # If user is not none, then a user with this email exists in the database
@@ -61,6 +61,11 @@ def signup_post():
         return redirect(url_for('bp_open.signup_get'))
 
     new_user = User(name=username, email=email, password=hashed_password)
+
+    # Creating a directory for that user
+
+    import os
+    os.makedirs(f'./static/users/{new_user.id}/images')
 
     from app import db
     db.session.add(new_user)

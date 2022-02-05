@@ -1,9 +1,11 @@
 import dotenv
 from flask import Flask
 from flask_login import LoginManager
+from flask_mqtt import Mqtt
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
+mqtt = Mqtt()
 
 
 def create_app():
@@ -12,20 +14,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
     db.init_app(app)
-<<<<<<< HEAD
-=======
 
-    mqtt.init_app(app)
-
-
-    @mqtt.on_connect()
-    def handle_connect(client, userdata, flags, rc):
-        if rc == 0:
-            print("Server is connected to broker")
-        else:
-            print(f"Something went wrong, got {rc} status code")
-
->>>>>>> b927b26 (Start working on profile pciture)
     login_manager = LoginManager()
 
     # Init the login manager with our app object
@@ -53,8 +42,3 @@ if __name__ == '__main__':
     dotenv.load_dotenv()
     app = create_app()
     app.run()
-<<<<<<< HEAD
-=======
-
-
->>>>>>> b927b26 (Start working on profile pciture)
