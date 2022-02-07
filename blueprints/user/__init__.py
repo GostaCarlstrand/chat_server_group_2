@@ -9,6 +9,9 @@ from controllers.chat_controller import create_chat_request, get_user_chat_reque
 from controllers.message_controller import get_user_messages, create_message, get_all_messages
 from controllers.user_controller import get_user_by_id
 from models import User, Chat
+import PIL.Image as Image
+import io
+import base64
 
 bp_user = Blueprint('bp_user', __name__)
 
@@ -220,6 +223,43 @@ def get_user_profile_picture(user_id):
         return result
 
     my_file = find('*.jpeg', f"/Users/gosta/PycharmProjects/chat_server_group_2/static/users/{user_id}")
-    my_file = my_file[0].split('chat_server_group_2')
-    path = my_file[1]
-    return Response(json.dumps(path), 200, content_type='application/json')
+    if my_file:
+        my_file = my_file[0].split('chat_server_group_2')
+        path = my_file[1]
+        return Response(json.dumps(path), 200, content_type='application/json')
+    else:
+        path = "/static/users/19/hidethepainharold.jpeg"        # Default profile picture
+        return Response(json.dumps(path), 200, content_type='application/json')
+
+
+@bp_user.post('/change_image')
+def changeProfilePicture():
+    data = request
+    picture_binary = data.data
+    picture_str = picture_binary.decode('utf-8')
+    picture_split_str = picture_str.split('"data:image/jpeg;base64,')
+    picture_binary = picture_split_str[1].encode()
+
+    b = base64.b64decode(picture_binary)
+
+    img = Image.open(io.BytesIO(b))
+    img.show()
+    print()
+
+
+
+    def find(pattern, path):
+        result = []
+        for root, dirs, files in os.walk(path):
+            for name in files:
+                if fnmatch.fnmatch(name, pattern):
+                    result.append(os.path.join(root, name))
+        return result
+
+    my_file = find('*.jpeg', f"/Users/gosta/PycharmProjects/chat_server_group_2/static/users/{current_user.id}")
+
+    if my_file:
+        os.remove(my_file[0])
+    else:
+        with open()
+    #my_file = find('*.txt', f"/Users/gosta/PycharmProjects/chat_server_group_2/static/users/{current_user.id}")
