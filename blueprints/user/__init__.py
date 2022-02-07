@@ -243,10 +243,6 @@ def changeProfilePicture():
     b = base64.b64decode(picture_binary)
 
     img = Image.open(io.BytesIO(b))
-    img.show()
-    print()
-
-
 
     def find(pattern, path):
         result = []
@@ -256,10 +252,14 @@ def changeProfilePicture():
                     result.append(os.path.join(root, name))
         return result
 
-    my_file = find('*.jpeg', f"/Users/gosta/PycharmProjects/chat_server_group_2/static/users/{current_user.id}")
+    user_path = f"/Users/gosta/PycharmProjects/chat_server_group_2/static/users/{current_user.id}"
+    user_path += '/profile-picture.jpeg'
+    my_file = find('*.jpeg', user_path)
 
     if my_file:
         os.remove(my_file[0])
+        img.save(user_path, 'JPEG')
     else:
-        with open()
-    #my_file = find('*.txt', f"/Users/gosta/PycharmProjects/chat_server_group_2/static/users/{current_user.id}")
+        img.save(user_path, 'JPEG')
+
+    return Response({'status': 'profile_picture_uploaded'}, 200, content_type='application/json');

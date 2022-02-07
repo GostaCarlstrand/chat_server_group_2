@@ -49,9 +49,11 @@
     <div class="profile-pic">
         <label class="-label" for="file">
             <span class="glyphicon glyphicon-camera"></span>
+    {% if user == current_user %}
             <span>Change Image</span>
         </label>
         <input id="file" type="file" accept="image/png, image/jpeg"/>
+    {% endif %}
 
         <img src=""
              id="output" width="300" height="300"/>
@@ -86,7 +88,6 @@
 
 
 
-
         function postFileToServer(file) {
 
             let img = file
@@ -96,8 +97,9 @@
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(img)
-            });
+            }).then(response => location.reload())
         }
+
 
 
 
