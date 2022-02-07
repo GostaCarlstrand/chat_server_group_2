@@ -74,7 +74,7 @@
     const fileInput = document.querySelector('input[type="file"]');
     let fileReader = new FileReader();
 
-        function handleSelected(e) {
+        function handleSelected() {
             let selectedFile = fileInput.files[0];
             if (selectedFile) {
                 fileReader.readAsDataURL(selectedFile);

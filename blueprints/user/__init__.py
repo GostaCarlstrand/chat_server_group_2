@@ -228,14 +228,13 @@ def get_user_profile_picture(user_id):
         path = my_file[1]
         return Response(json.dumps(path), 200, content_type='application/json')
     else:
-        path = "/static/users/19/hidethepainharold.jpeg"        # Default profile picture
+        path = "/static/default_profile_picture/picture_default.jpeg"        # Default profile picture
         return Response(json.dumps(path), 200, content_type='application/json')
 
 
 @bp_user.post('/change_image')
 def changeProfilePicture():
-    data = request
-    picture_binary = data.data
+    picture_binary = request.data
     picture_str = picture_binary.decode('utf-8')
     picture_split_str = picture_str.split('"data:image/jpeg;base64,')
     picture_binary = picture_split_str[1].encode()
