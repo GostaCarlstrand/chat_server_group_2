@@ -33,3 +33,16 @@ def get_all_messages():
     from models import Message
     message = Message.query.all()
     return message
+
+
+def send_msg_from_server(title, body):
+    from models import ServerMessage
+    message = ServerMessage(title=title, body=body, receiver=current_user.id)
+    from app import db
+    db.session.add(message)
+    db.session.commit()
+
+
+def get_server_messages(user_id):
+    from models import ServerMessage
+    msg = ServerMessage.query.filter_by(receiver_id=user_id).all()

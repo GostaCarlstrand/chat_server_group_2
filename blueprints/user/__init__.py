@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, redirect, url_for, Response, reque
 from flask_login import logout_user, login_required, current_user
 
 from controllers.chat_controller import create_chat_request, get_user_chat_requests, accept_chat_request
-from controllers.message_controller import get_user_messages, create_message, get_all_messages
+from controllers.message_controller import get_user_messages, create_message, get_all_messages, get_server_messages
 from controllers.user_controller import get_user_by_id
 from models import User, Chat
 import PIL.Image as Image
@@ -165,6 +165,7 @@ def user_msg_js():
 # temp removed @authorize_public_key
 def mailbox_get():
     messages = get_user_messages()
+    server_msg = get_server_messages()
     return render_template('mailbox.html', messages=messages)
 
 
@@ -235,7 +236,7 @@ def get_user_profile_picture(user_id):
 @bp_user.post('/change_image')
 def changeProfilePicture():
     picture_binary = request.data
-    picture_str = picture_binary.decode('utf-8')
+    picture_str = picture_binary.decode('latin-1')
     picture_split_str = picture_str.split('"data:image/jpeg;base64,')
     picture_binary = picture_split_str[1].encode()
 
