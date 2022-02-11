@@ -6,6 +6,7 @@ from flask_cors import cross_origin
 from controllers.chat_controller import create_chat_request, get_user_chat_requests, accept_chat_request
 from controllers.message_controller import get_user_messages, create_message, get_all_messages
 from controllers.user_controller import get_user_by_id
+from controllers.encryption_controller import encrypt_message
 from models import User, Chat
 
 bp_user = Blueprint('bp_user', __name__)
@@ -171,12 +172,17 @@ def mailbox_get():
 @authorize_public_key
 def send_chat_request():
     receiver_id = request.form['user_id']
-    user = current_user.id
-    chat = create_chat_request(user, receiver_id)
-    flash(f'Chat accepted. Start your socket server. Connect to chat id: {chat.id}, chat partner id: {chat.receiver_id}')
-    return redirect(url_for('bp_user.get_user_profile', user_id=user))
-    # return Response(json.dumps(f'Chat accepted. Start your socket client. Connect to chat id: {chat.id}, chat partner '
-    #                            f'id: {chat.receiver_id}'), 200, content_type='application/json')
+    user = current_user
+    chat = create_chat_request(user.id, receiver_id)
+    recipient_user = get_user_by_id(receiver_id)
+    title = 'Message from server'
+    encrypted_aes_key, ciphertext_body, ciphertext_title = encrypt_message(f'Start your socket server. Connect to chat id: {chat.id}, chat partner id: {chat.receiver_id}', title, user.public_rsa_key)
+    create_message(ciphertext_title, ciphertext_body, user.id, encrypted_aes_key)
+    encrypted_aes_key, ciphertext_body, ciphertext_title = encrypt_message(
+        f"You've received a chat request. Start your socket client. Connect to chat id: {chat.id}, chat partner id: {chat.sender_id}", title,
+        recipient_user.public_rsa_key)
+    create_message(ciphertext_title, ciphertext_body, receiver_id, encrypted_aes_key)
+    return redirect(url_for('bp_user.mailbox_get', user_id=user))
 
 
 @bp_user.post('/chat_request/accept/<chat_id>')
