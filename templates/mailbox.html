@@ -84,7 +84,7 @@
 
             rsaEncrypt.setPrivateKey(private_rsa_key);
 
-            decryptedAESKey = rsaEncrypt.decrypt(aes_key);
+            let decryptedAESKey = rsaEncrypt.decrypt(aes_key);
             return decryptedAESKey
         }
     </script>
