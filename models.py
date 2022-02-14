@@ -46,9 +46,10 @@ class Message(db.Model):
 
 class ServerMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    body = db.Column(db.Text)
-    title = db.Column(db.Text)
+    title = db.Column(db.BLOB)
+    body = db.Column(db.BLOB)
     recv_id = db.Column(db.Integer)
+    encrypted_aes_key = db.Column(db.BLOB)
 
 
 class Chat(db.Model):

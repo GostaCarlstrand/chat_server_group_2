@@ -9,11 +9,6 @@
     <p>Upload private key</p>
     <input type="file" id="priv-file" enctype="multipart/form-data" />
     <button onclick="readPrivateKey()">Submit private key</button><span id="priv-loaded"></span>
-    {% if server_messages %}
-        {% for message in server_messages %}
-            <p>message</p>
-        {% endfor %}
-    {% endif %}
 
 
 {% endblock %}
@@ -34,6 +29,7 @@
             privateKey = event.target.result;
             privateKey = privateKey.replace(/(\r\n|\n|\r)/gm, "");
             getMsgFromServer(); //Retrieve all encrypted messages
+            getServerMsgFromServer();
 
         };
 
@@ -81,6 +77,20 @@
 
 
         xhttp.open('GET', "http://127.0.0.1:5000/messages")
+        xhttp.send()
+    }
+    function getServerMsgFromServer() {
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function () {
+            let encryptedMessages = JSON.parse(this.responseText);
+            //encryptedMessages = JSON.stringify(encryptedMessages)
+            let size = Object.keys(encryptedMessages).length;
+            decryptMessage(encryptedMessages, size)
+        }
+
+
+        xhttp.open('GET', "http://127.0.0.1:5000/server-messages")
         xhttp.send()
     }
 

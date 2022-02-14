@@ -6,7 +6,7 @@ from flask_login import logout_user, login_required, current_user
 from flask_cors import cross_origin
 from controllers.chat_controller import create_chat_request, get_user_chat_requests, accept_chat_request
 from controllers.message_controller import get_user_messages, create_message, get_all_messages, create_server_message, \
-    msg_from_server
+    get_msg_from_server
 from controllers.user_controller import get_user_by_id
 from controllers.encryption_controller import encrypt_message
 from models import User, Chat
@@ -161,14 +161,32 @@ def user_msg_js():
     return Response(json.dumps(message_to_mailbox), 200, content_type='application/json')
 
 
+@bp_user.get('/server-messages')
+@login_required
+@authorize_public_key
+def server_msg_js():
+    user = get_user_by_id(current_user.id)
+    server_messages = get_msg_from_server(user.id)
+    server_message_to_mailbox = []
+    for message in server_messages:
+        message_dict = {
+            'title': message.title.decode('utf-8'),
+            'body': message.body.decode('utf-8'),
+            'encrypted_aes_key': message.encrypted_aes_key.decode('utf-8'),
+            'recv_id': message.recv_id
+        }
+        server_message_to_mailbox.append(message_dict)
+    return Response(json.dumps(server_message_to_mailbox), 200, content_type='application/json')
+
+
+
+
 @bp_user.get('/mailbox')
 @login_required
 @authorize_public_key
 def mailbox_get():
     messages = get_user_messages()
-    user = get_user_by_id(current_user.id)
-    server_messages = msg_from_server(user.id)
-    return render_template('mailbox.html', messages=messages, server_messages=server_messages)
+    return render_template('mailbox.html', messages=messages)
 
 
 @bp_user.post('/chat_request')
@@ -182,14 +200,8 @@ def send_chat_request():
     title = 'Message from server'
     body_sender = f'Start your socket server. Connect to chat id: {chat.id}, chat partner id: {chat.receiver_id}'
     body_recv = f'Start your socket client. Connect to chat id: {chat.id}, chat partner id: {chat.sender_id}'
-    create_server_message(title, body_sender, user.id)
     encrypted_aes_key, ciphertext_body, ciphertext_title = encrypt_message(body_sender, title, user.public_rsa_key)
-
-
-    # Arguments in bytes, needs to be string!
-    # create_message(ciphertext_title, ciphertext_body, user.id, encrypted_aes_key)
-
-
+    create_server_message(ciphertext_title, ciphertext_body, user.id, encrypted_aes_key)
     return redirect(url_for('bp_user.mailbox_get', user_id=user))
 
 

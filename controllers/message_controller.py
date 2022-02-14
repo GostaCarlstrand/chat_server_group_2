@@ -35,15 +35,15 @@ def get_all_messages():
     return message
 
 
-def create_server_message(title, body, recv_id):
+def create_server_message(title, body, recv_id, encrypted_aes_key):
     from models import ServerMessage
-    message = ServerMessage(title=title, body=body, recv_id=recv_id)
+    message = ServerMessage(title=title, body=body, recv_id=recv_id, encrypted_aes_key=encrypted_aes_key)
     from app import db
     db.session.add(message)
     db.session.commit()
 
 
-def msg_from_server(user_id):
+def get_msg_from_server(user_id):
     from models import ServerMessage
     messages = ServerMessage.query.filter_by(recv_id=user_id).all()
     return messages
