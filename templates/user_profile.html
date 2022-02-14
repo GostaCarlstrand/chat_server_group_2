@@ -66,6 +66,7 @@
 
             xhttp.onload = function() {
                 public_key = JSON.parse(this.responseText);
+                console.log(public_key)
                 key = CryptoJS.lib.WordArray.random(16).toString(); //Creating an AES key
 
                 let message = document.getElementById("msg_content").value; //Extract values
@@ -90,7 +91,7 @@
 
             xhttp.open('GET', "http://127.0.0.1:5000/user_pubkey/{{ user.id }}")
             xhttp.send()
-            location.reload()
+            // Until fixed location.reload()
             document.getElementById("msg_sent").innerHTML = "Message sent";
         }
 

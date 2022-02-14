@@ -1,10 +1,12 @@
 import json
+from base64 import b64encode
 from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, Response, request, flash
 from flask_login import logout_user, login_required, current_user
 from flask_cors import cross_origin
 from controllers.chat_controller import create_chat_request, get_user_chat_requests, accept_chat_request
-from controllers.message_controller import get_user_messages, create_message, get_all_messages
+from controllers.message_controller import get_user_messages, create_message, get_all_messages, create_server_message, \
+    msg_from_server
 from controllers.user_controller import get_user_by_id
 from controllers.encryption_controller import encrypt_message
 from models import User, Chat
@@ -164,7 +166,9 @@ def user_msg_js():
 @authorize_public_key
 def mailbox_get():
     messages = get_user_messages()
-    return render_template('mailbox.html', messages=messages)
+    user = get_user_by_id(current_user.id)
+    server_messages = msg_from_server(user.id)
+    return render_template('mailbox.html', messages=messages, server_messages=server_messages)
 
 
 @bp_user.post('/chat_request')
@@ -172,16 +176,20 @@ def mailbox_get():
 @authorize_public_key
 def send_chat_request():
     receiver_id = request.form['user_id']
-    user = current_user
+    user = get_user_by_id(current_user.id)
     chat = create_chat_request(user.id, receiver_id)
     recipient_user = get_user_by_id(receiver_id)
     title = 'Message from server'
-    encrypted_aes_key, ciphertext_body, ciphertext_title = encrypt_message(f'Start your socket server. Connect to chat id: {chat.id}, chat partner id: {chat.receiver_id}', title, user.public_rsa_key)
-    create_message(ciphertext_title, ciphertext_body, user.id, encrypted_aes_key)
-    encrypted_aes_key, ciphertext_body, ciphertext_title = encrypt_message(
-        f"You've received a chat request. Start your socket client. Connect to chat id: {chat.id}, chat partner id: {chat.sender_id}", title,
-        recipient_user.public_rsa_key)
-    create_message(ciphertext_title, ciphertext_body, receiver_id, encrypted_aes_key)
+    body_sender = f'Start your socket server. Connect to chat id: {chat.id}, chat partner id: {chat.receiver_id}'
+    body_recv = f'Start your socket client. Connect to chat id: {chat.id}, chat partner id: {chat.sender_id}'
+    create_server_message(title, body_sender, user.id)
+    encrypted_aes_key, ciphertext_body, ciphertext_title = encrypt_message(body_sender, title, user.public_rsa_key)
+
+
+    # Arguments in bytes, needs to be string!
+    # create_message(ciphertext_title, ciphertext_body, user.id, encrypted_aes_key)
+
+
     return redirect(url_for('bp_user.mailbox_get', user_id=user))
 
 

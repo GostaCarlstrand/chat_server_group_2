@@ -44,6 +44,13 @@ class Message(db.Model):
     encrypted_aes_key = db.Column(db.String(250), default=None)
 
 
+class ServerMessage(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    body = db.Column(db.Text)
+    title = db.Column(db.Text)
+    recv_id = db.Column(db.Integer)
+
+
 class Chat(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

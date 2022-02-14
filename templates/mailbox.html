@@ -9,6 +9,11 @@
     <p>Upload private key</p>
     <input type="file" id="priv-file" enctype="multipart/form-data" />
     <button onclick="readPrivateKey()">Submit private key</button><span id="priv-loaded"></span>
+    {% if server_messages %}
+        {% for message in server_messages %}
+            <p>message</p>
+        {% endfor %}
+    {% endif %}
 
 
 {% endblock %}
@@ -44,7 +49,7 @@
     function decryptMessage(encryptedMessages, size) {
 
         createRowElement("", 'hr')
-        for(let i = 0; i < size; i++) {
+        for (let i = 0; i < size; i++) {
             let decrypted_aes_key = rsaDecryptAesKey((encryptedMessages[i].encrypted_aes_key), privateKey);
             let decrypted_title = decryptData(encryptedMessages[i].title, decrypted_aes_key);
             let decrypted_body = decryptData(encryptedMessages[i].body, decrypted_aes_key);
@@ -56,6 +61,7 @@
             createRowElement("", 'hr')
         }
     }
+
 
     function decryptData(encrypted_message, key) {
         let clearText = CryptoJS.AES.decrypt(encrypted_message, key);
@@ -86,6 +92,8 @@
 
             let decryptedAESKey = rsaEncrypt.decrypt(aes_key);
             return decryptedAESKey
-        }
+    }
+
+
     </script>
 {% endblock %}
