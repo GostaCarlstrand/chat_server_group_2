@@ -1,14 +1,12 @@
 import json
-from base64 import b64encode
 from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, Response, request, flash
 from flask_login import logout_user, login_required, current_user
 from flask_cors import cross_origin
 from controllers.chat_controller import create_chat_request, get_user_chat_requests, accept_chat_request
-from controllers.message_controller import get_user_messages, create_message, get_all_messages, create_server_message, \
-    get_msg_from_server
+from controllers.message_controller import get_user_messages, create_message, get_all_messages
 from controllers.user_controller import get_user_by_id
-from controllers.encryption_controller import encrypt_message
+
 from models import User, Chat
 
 bp_user = Blueprint('bp_user', __name__)
@@ -161,26 +159,6 @@ def user_msg_js():
     return Response(json.dumps(message_to_mailbox), 200, content_type='application/json')
 
 
-@bp_user.get('/server-messages')
-@login_required
-@authorize_public_key
-def server_msg_js():
-    user = get_user_by_id(current_user.id)
-    server_messages = get_msg_from_server(user.id)
-    server_message_to_mailbox = []
-    for message in server_messages:
-        message_dict = {
-            'title': message.title.decode('utf-8'),
-            'body': message.body.decode('utf-8'),
-            'encrypted_aes_key': message.encrypted_aes_key.decode('utf-8'),
-            'recv_id': message.recv_id
-        }
-        server_message_to_mailbox.append(message_dict)
-    return Response(json.dumps(server_message_to_mailbox), 200, content_type='application/json')
-
-
-
-
 @bp_user.get('/mailbox')
 @login_required
 @authorize_public_key
@@ -197,11 +175,8 @@ def send_chat_request():
     user = get_user_by_id(current_user.id)
     chat = create_chat_request(user.id, receiver_id)
     recipient_user = get_user_by_id(receiver_id)
-    title = 'Message from server'
     body_sender = f'Start your socket server. Connect to chat id: {chat.id}, chat partner id: {chat.receiver_id}'
-    body_recv = f'Start your socket client. Connect to chat id: {chat.id}, chat partner id: {chat.sender_id}'
-    encrypted_aes_key, ciphertext_body, ciphertext_title = encrypt_message(body_sender, title, user.public_rsa_key)
-    create_server_message(ciphertext_title, ciphertext_body, user.id, encrypted_aes_key)
+    flash(body_sender)
     return redirect(url_for('bp_user.mailbox_get', user_id=user))
 
 
@@ -232,11 +207,3 @@ def get_user_public_key(user_id):
     user = get_user_by_id(user_id)
     public_key = user.public_rsa_key.decode("utf-8")
     return Response(json.dumps(public_key), 200, content_type='application/json')
-
-
-# @bp_user.get('/user_pubkey/<user_id>')
-# @login_required
-# def get_user_public_key(user_id):
-#     user = get_user_by_id(user_id)
-#     public_key = user.public_rsa_key
-#     return Response(public_key, 200, content_type='application/data')
